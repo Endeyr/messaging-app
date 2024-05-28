@@ -19,7 +19,7 @@ This is a simple web messaging application built using React, Vite, Tailwind CSS
 
 1. Clone the repository:
 
-```
+```node.js
 git clone https://github.com/Endeyr/messaging-app.git
 ```
 
