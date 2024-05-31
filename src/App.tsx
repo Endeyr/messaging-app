@@ -1,7 +1,19 @@
-import Button from '@mui/material/Button';
+import Home from './components/Home'
 
 function App() {
-	return <Button variant="contained">Hello world</Button>;
+	// TODO Add user authentication
+	// TODO Add user real time messaging
+	// TODO Add user custom profiles
+	// TODO Deploy to Vercel
+	// TODO Add users can send images
+	// TODO Add users can add friends + see who is online
+	// TODO Add users to group chat
+	// TODO Customize theme + style app
+	return (
+		<>
+			<Home />
+		</>
+	)
 }
 
 export default App

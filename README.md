@@ -1,6 +1,6 @@
 # React Messaging App
 
-This is a simple web messaging application built using React, Vite, Tailwind CSS, and Vitest for the Odin Project course.
+This is a simple web messaging application built using React, Vite, Material UI, and Vitest for the Odin Project course.
 
 ## Features
 
@@ -10,10 +10,10 @@ This is a simple web messaging application built using React, Vite, Tailwind CSS
 
 ## Technologies Used
 
-- React: JavaScript library for building user interfaces.
-- Vite: Next-generation frontend tooling for React projects.
-- Tailwind CSS: Utility-first CSS framework for styling.
-- Vitest: Testing library for React components.
+- React: A popular JavaScript library for building user interfaces, React allows for the creation of reusable UI components and efficient rendering through its virtual DOM implementation.
+- Vite: A next-generation frontend build tool, Vite provides a fast and optimized development environment for modern web projects, featuring instant server start and lightning-fast hot module replacement.
+- MaterialUI: A robust React component library that implements Google's Material Design, Material UI offers a wide range of customizable components to create visually appealing and consistent user interfaces.
+- Vitest: Vitest is a fast and efficient unit testing framework tailored for modern web development with Vite.
 
 ## Setup
 
