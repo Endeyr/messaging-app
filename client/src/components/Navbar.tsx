@@ -7,6 +7,7 @@ import {
 	Button,
 	Container,
 	IconButton,
+	Link,
 	Menu,
 	MenuItem,
 	Toolbar,
@@ -14,7 +15,7 @@ import {
 	Typography,
 } from '@mui/material'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 const pages = ['products', 'pricing', 'blog']
 const settings = ['profile', 'account', 'dashboard', 'logout']
 const Navbar = () => {
@@ -42,10 +43,9 @@ const Navbar = () => {
 					{/* Desktop Nav */}
 					<AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
 					<Typography
+						component={'div'}
 						variant="h6"
 						noWrap
-						component="a"
-						href="#app-bar-with-responsive-menu"
 						sx={{
 							mr: 2,
 							display: { xs: 'none', md: 'flex' },
@@ -57,6 +57,7 @@ const Navbar = () => {
 						}}
 					>
 						<Link
+							component={RouterLink}
 							to={'/'}
 							style={{
 								textDecoration: 'none',
@@ -92,8 +93,9 @@ const Navbar = () => {
 						>
 							{pages.map((page) => (
 								<MenuItem key={page} onClick={handleCloseNavMenu}>
-									<Typography textAlign="center">
+									<Typography component={'div'} textAlign="center">
 										<Link
+											component={RouterLink}
 											to={`${page}`}
 											style={{
 												textDecoration: 'none',
@@ -110,10 +112,9 @@ const Navbar = () => {
 					</Box>
 					<AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
 					<Typography
+						component={'div'}
 						variant="h5"
 						noWrap
-						component="a"
-						href="#app-bar-with-responsive-menu"
 						sx={{
 							mr: 2,
 							display: { xs: 'flex', md: 'none' },
@@ -127,6 +128,7 @@ const Navbar = () => {
 						}}
 					>
 						<Link
+							component={RouterLink}
 							to={'/'}
 							style={{
 								textDecoration: 'none',
@@ -144,6 +146,7 @@ const Navbar = () => {
 								sx={{ my: 2, color: 'white', display: 'block' }}
 							>
 								<Link
+									component={RouterLink}
 									to={`${page}`}
 									style={{
 										textDecoration: 'none',
@@ -181,10 +184,12 @@ const Navbar = () => {
 							{settings.map((setting) => (
 								<MenuItem key={setting} onClick={handleCloseUserMenu}>
 									<Typography
+										component={'div'}
 										textAlign="center"
 										style={{ textTransform: 'capitalize' }}
 									>
 										<Link
+											component={RouterLink}
 											to={`${setting}`}
 											style={{
 												textDecoration: 'none',

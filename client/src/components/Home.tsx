@@ -1,6 +1,10 @@
-import Messenger from './Messenger'
+import Test from './Test'
 
 const Home = () => {
-	return <Messenger />
+	return (
+		<>
+			<Test />
+		</>
+	)
 }
 export default Home

@@ -17,10 +17,12 @@
 		"@mui/icons-material": "^5.15.19",
 		"@mui/material": "^5.15.19",
 		"@types/react-router-dom": "^5.3.3",
+		"date-and-time": "^3.3.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
+		"react-hook-form": "^7.51.5",
 		"react-router-dom": "^6.23.1",
-		"react-use-websocket": "^4.8.1"
+		"socket.io-client": "^4.7.5"
 	},
 	"devDependencies": {
 		"@types/react": "^18.2.66",
