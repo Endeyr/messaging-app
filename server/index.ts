@@ -1,10 +1,11 @@
 import cors from 'cors'
+import date from 'date-and-time'
 import express from 'express'
 import http from 'http'
 import path from 'path'
 import { Server } from 'socket.io'
 import { v4 as uuidv4 } from 'uuid'
-import { UsersType } from './types'
+import { MessageType, UsersType } from './types'
 
 const app = express()
 app.use(express.static(path.join(__dirname, '/public')))
@@ -19,7 +20,7 @@ const io = new Server(server, {
 })
 
 const users: UsersType = {}
-const messages = []
+const messages: MessageType[] = []
 
 io.on('connection', (socket) => {
 	console.log(`User Connected: ${socket.id}`)
@@ -42,8 +43,17 @@ io.on('connection', (socket) => {
 	})
 
 	socket.on('send_message', (data) => {
-		console.log(`Message from ${data.room}: ${data.message} - ${data.username}`)
-		socket.to(data.room).emit('receive_message', data)
+		console.log(`Message from ${data.room}: ${data.content} - ${data.from}}`)
+		messages.push({
+			room: data.room,
+			content: data.content,
+			from: data.from,
+			timestamp: date.format(new Date(), 'HH:mm:ss DD/MM/YYYY'),
+		})
+		const roomMessages = messages.filter(
+			(message) => message.room === data.room
+		)
+		socket.to(data.room).emit('receive_message', roomMessages)
 	})
 })
 

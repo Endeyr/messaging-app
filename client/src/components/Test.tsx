@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import io from 'socket.io-client'
+import { MessageType } from '../types/Test'
 
 const socket = io('http://localhost:5174')
 
 const Test = () => {
 	const [isConnected, setIsConnected] = useState(socket.connected)
 	const [room, setRoom] = useState('')
-	const [message, setMessage] = useState('')
-	const [messageReceived, setMessageReceived] = useState('')
+	const [userMessage, setUserMessage] = useState('')
+	const [messageReceived, setMessageReceived] = useState<MessageType[]>([])
 	const [username, setUsername] = useState('')
 
 	const joinRoom = () => {
@@ -17,8 +18,12 @@ const Test = () => {
 	}
 
 	const sendMessage = () => {
-		if (message !== '' && room !== '' && username !== '') {
-			socket.emit('send_message', { message, room, username })
+		if (userMessage !== '' && room !== '' && username !== '') {
+			socket.emit('send_message', {
+				content: userMessage,
+				room,
+				from: username,
+			})
 		}
 	}
 
@@ -35,11 +40,8 @@ const Test = () => {
 		const onDisconnect = () => {
 			setIsConnected(false)
 		}
-		const handleReceiveMessage = (data: {
-			message: string
-			username: string
-		}) => {
-			setMessageReceived(`${data.message} from: ${data.username}`)
+		const handleReceiveMessage = (messages: MessageType[]) => {
+			setMessageReceived(messages)
 		}
 		socket.on('connect', onConnect)
 		socket.on('disconnect', onDisconnect)
@@ -72,13 +74,17 @@ const Test = () => {
 				<input
 					placeholder="Message..."
 					onChange={(event) => {
-						setMessage(event.target.value)
+						setUserMessage(event.target.value)
 					}}
 				/>
 				<button onClick={sendMessage}> Send Message</button>
-				<p>Message: {message}</p>
-				<h1> Message:</h1>
-				{messageReceived}
+				<p>Message: {userMessage}</p>
+				<h1> Messages: {messageReceived.length}</h1>
+				{messageReceived.map((message) => (
+					<div key={message.timestamp}>
+						{message.content} - {message.from} - {message.timestamp}
+					</div>
+				))}
 			</div>
 		</>
 	)

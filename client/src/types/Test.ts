@@ -3,10 +3,12 @@ export type UserStateType = {
 	typing: boolean
 	onlineStatus: 'online' | 'offline'
 }
+
 export type UserType = {
 	username: string
 	state: UserStateType
 }
+
 export type UsersType = {
 	[key: string]: UserType
 }
