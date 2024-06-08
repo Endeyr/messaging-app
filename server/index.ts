@@ -2,13 +2,15 @@ import cors from 'cors'
 import date from 'date-and-time'
 import express from 'express'
 import http from 'http'
+import mongoose from 'mongoose'
 import path from 'path'
 import { Server } from 'socket.io'
 import { v4 as uuidv4 } from 'uuid'
+import User from './model/user'
 import { MessageType, UsersType } from './types'
 
 const app = express()
-app.use(express.static(path.join(__dirname, '/public')))
+app.use(express.static(path.join(__dirname, 'build')))
 app.use(cors())
 
 const server = http.createServer(app)
@@ -17,6 +19,33 @@ const io = new Server(server, {
 		origin: 'http://127.0.0.1:5173',
 		methods: ['GET', 'POST'],
 	},
+})
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+const mongodbUsername = 'endeyr'
+const mongodbPassword = 'PAxsR7exz4De6K4v'
+
+mongoose.connect(
+	`mongodb+srv://${mongodbUsername}:${mongodbPassword}@messagingapp.fc5kqwd.mongodb.net/?retryWrites=true&w=majority&appName=MessagingApp`
+)
+
+app.post('/register', async (req, res, next) => {
+	const { username, email, password, role } = req.body
+	try {
+		const newUser = new User({
+			username: username,
+			email: email,
+			password: password,
+			role: role,
+		})
+		const ret = await newUser.save()
+		res.json(ret)
+	} catch (error) {
+		console.log(error)
+		return next(error)
+	}
 })
 
 const users: UsersType = {}

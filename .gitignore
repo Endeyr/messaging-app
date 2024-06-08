@@ -25,3 +25,5 @@ symbols.json
 *.njsproj
 *.sln
 *.sw?
+
+TODO.MD

@@ -1,5 +1,9 @@
 {
 	"name": "server",
+	"engines": {
+		"npm": "10.8.1",
+		"node": "20.10.0"
+	},
 	"version": "1.0.0",
 	"main": "dist/index.js",
 	"scripts": {
@@ -12,9 +16,12 @@
 	"license": "ISC",
 	"description": "",
 	"dependencies": {
+		"bcryptjs": "^2.4.3",
 		"cors": "^2.8.5",
 		"date-and-time": "^3.3.0",
 		"express": "^4.19.2",
+		"jsonwebtoken": "^9.0.2",
+		"mongoose": "^8.4.1",
 		"socket.io": "^4.7.5",
 		"uuid": "^9.0.1"
 	},
