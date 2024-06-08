@@ -1,6 +1,6 @@
 import { FieldError, UseFormRegister } from 'react-hook-form'
 
-enum RoleEnum {
+export enum RoleEnum {
 	user = 'user',
 	admin = 'admin',
 	moderator = 'moderator',
@@ -10,6 +10,7 @@ export type RegisterFormDataType = {
 	username: string
 	email: string
 	password: string
+	confirmPassword: string
 	role: RoleEnum
 }
 
