@@ -1,8 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Button, FormControl } from '@mui/material'
+import axios from 'axios'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import AuthFormField from '../../components/AuthFormFields'
 import { registerSchema } from '../../schema/RegisterSchema'
+import { registerUser } from '../../services/api'
 import { RegisterFormDataType } from '../../types/Register'
 
 const Register = () => {
@@ -15,8 +17,18 @@ const Register = () => {
 		formState: { errors },
 	} = useForm<RegisterFormDataType>({ resolver: zodResolver(registerSchema) })
 	// TODO send form to backend
-	const onSubmit: SubmitHandler<RegisterFormDataType> = (data) =>
-		console.log(data)
+	const onSubmit: SubmitHandler<RegisterFormDataType> = async (data) => {
+		try {
+			const response = await registerUser(data)
+			console.log(response)
+		} catch (error: unknown) {
+			if (axios.isAxiosError(error)) {
+				console.error(error.response?.data)
+			} else {
+				console.log('An error occurred', error)
+			}
+		}
+	}
 
 	return (
 		<>

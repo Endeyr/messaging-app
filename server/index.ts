@@ -1,3 +1,4 @@
+import bodyParser from 'body-parser'
 import cors from 'cors'
 import date from 'date-and-time'
 import express from 'express'
@@ -7,9 +8,11 @@ import path from 'path'
 import { Server } from 'socket.io'
 import { v4 as uuidv4 } from 'uuid'
 import User from './model/user'
+import userRouter from './routes/userRoutes'
 import { MessageType, UsersType } from './types'
 
 const app = express()
+const PORT = 5174
 app.use(express.static(path.join(__dirname, 'build')))
 app.use(cors())
 
@@ -21,8 +24,9 @@ const io = new Server(server, {
 	},
 })
 
-app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+app.use('/api/user', userRouter)
 
 const mongodbUsername = 'endeyr'
 const mongodbPassword = 'PAxsR7exz4De6K4v'
@@ -86,6 +90,6 @@ io.on('connection', (socket) => {
 	})
 })
 
-server.listen(5174, () => {
+server.listen(PORT, () => {
 	console.log('SERVER IS RUNNING')
 })

@@ -1,8 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Button, FormControl } from '@mui/material'
+import axios from 'axios'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import LoginFormField from '../../components/LoginFormFields'
 import { loginSchema } from '../../schema/LoginSchema'
+import { loginUser } from '../../services/api'
 import { LoginFormDataType } from '../../types/Login'
 
 const Login = () => {
@@ -15,7 +17,18 @@ const Login = () => {
 		formState: { errors },
 	} = useForm<LoginFormDataType>({ resolver: zodResolver(loginSchema) })
 	// TODO send form to backend
-	const onSubmit: SubmitHandler<LoginFormDataType> = (data) => console.log(data)
+	const onSubmit: SubmitHandler<LoginFormDataType> = async (data) => {
+		try {
+			const response = await loginUser(data)
+			console.log(response)
+		} catch (error: unknown) {
+			if (axios.isAxiosError(error)) {
+				console.error(error.response?.data)
+			} else {
+				console.log('An error occurred', error)
+			}
+		}
+	}
 
 	return (
 		<>
