@@ -17,7 +17,7 @@ import {
 import { useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 const pages = ['products', 'pricing', 'blog']
-const settings = ['profile', 'account', 'dashboard', 'logout']
+const settings = ['profile', 'account', 'login', 'register', 'logout']
 const Navbar = () => {
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
 	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
@@ -190,7 +190,7 @@ const Navbar = () => {
 									>
 										<Link
 											component={RouterLink}
-											to={`${setting}`}
+											to={`/authentication/${setting}`}
 											style={{
 												textDecoration: 'none',
 												color: 'inherit',
