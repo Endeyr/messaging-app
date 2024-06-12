@@ -89,8 +89,7 @@ export const loginUser = async (
 		success: true,
 		message: 'User logged in successfully',
 		data: {
-			userId: existingUser.id,
-			email: existingUser.email,
+			username: existingUser.username,
 			token: token,
 		},
 	})
@@ -111,7 +110,10 @@ export const accessUser = (req: Request, res: Response, next: NextFunction) => {
 		if (decodedToken.userId && decodedToken.email) {
 			res.status(200).json({
 				success: true,
-				data: { userId: decodedToken.userId, email: decodedToken.email },
+				data: {
+					userId: decodedToken.userId,
+					email: decodedToken.email,
+				},
 			})
 		} else {
 			res

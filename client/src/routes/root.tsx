@@ -1,8 +1,14 @@
 import { Container } from '@mui/material'
+import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 
 const Root = () => {
+	const [username, setUsername] = useState('')
+	const [isLoggedIn, setIsLoggedIn] = useState(false)
+	const [notificationMessage, setNotificationMessage] = useState('')
+	const [isLoading, setIsLoading] = useState(false)
+	const [errorMessage, setErrorMessage] = useState('')
 	return (
 		<>
 			<Navbar />
@@ -16,7 +22,20 @@ const Root = () => {
 					minHeight: '90dvh',
 				}}
 			>
-				<Outlet />
+				<Outlet
+					context={{
+						username,
+						setUsername,
+						isLoggedIn,
+						setIsLoggedIn,
+						notificationMessage,
+						setNotificationMessage,
+						isLoading,
+						setIsLoading,
+						errorMessage,
+						setErrorMessage,
+					}}
+				/>
 			</Container>
 		</>
 	)

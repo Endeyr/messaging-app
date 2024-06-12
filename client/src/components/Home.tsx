@@ -1,10 +1,21 @@
+import { useEffect } from 'react'
+import { useNavigate, useOutletContext } from 'react-router-dom'
+import { OutletContextType } from '../types/Context'
+
 const Home = () => {
-	// client sends request data with JWT on x-access-token header
-	// backend checks JWT signature, gets user info & authenticates based on users authorities
-	// backend returns content based on authorities
+	const { notificationMessage, username, isLoggedIn } =
+		useOutletContext<OutletContextType>()
+	const navigate = useNavigate()
+	// TODO keep user logged in on refresh / changing page
+	useEffect(() => {
+		if (!isLoggedIn) {
+			navigate('/authentication/login')
+		}
+	}, [navigate, isLoggedIn])
 	return (
 		<>
-			<div>Home</div>
+			<p>{username + ' ' + notificationMessage}</p>
+			<div>Welcome Home</div>
 		</>
 	)
 }
