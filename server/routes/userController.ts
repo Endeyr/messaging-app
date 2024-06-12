@@ -132,8 +132,8 @@ export const accessUserData = async (
 		if (!user) {
 			return res.status(404).json({ message: 'User not found' })
 		}
-		const { username, email, _id, role } = user
-		res.status(200).json({ userId: _id, username, email, role })
+		const { username, email, _id } = user
+		res.status(200).json({ userId: _id, username, email })
 	} catch (error) {
 		next(error)
 	}
