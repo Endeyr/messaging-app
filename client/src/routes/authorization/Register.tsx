@@ -7,7 +7,7 @@ import AuthFormField from '../../components/AuthFormFields'
 import { registerSchema } from '../../schema/RegisterSchema'
 import { registerUser } from '../../services/api'
 import { OutletContextType } from '../../types/Context'
-import { RegisterFormDataType } from '../../types/Register'
+import { RegisterFormDataType, RoleEnum } from '../../types/Register'
 
 const Register = () => {
 	const {
@@ -29,25 +29,28 @@ const Register = () => {
 		formState: { errors },
 	} = useForm<RegisterFormDataType>({ resolver: zodResolver(registerSchema) })
 	const onSubmit: SubmitHandler<RegisterFormDataType> = async (data) => {
-		let user
 		try {
 			setIsLoading(true)
 			const response = await registerUser(data)
-			user = response.data.data.username
+			if (response.data.success) {
+				setNotificationMessage('User registered')
+			} else {
+				setNotificationMessage('Problem registering user')
+			}
+			navigate('/authentication/login')
 		} catch (error: unknown) {
 			if (axios.isAxiosError(error)) {
-				console.error(error.response?.data)
-				setErrorMessage(error.response?.data)
+				const errorMessage =
+					error.response?.data.errors[0]?.message ||
+					error.response?.data.message ||
+					'An error occurred'
+				setErrorMessage(errorMessage)
 			} else {
 				console.log('An error occurred', error)
 				setErrorMessage('An error occurred')
 			}
 		} finally {
 			setIsLoading(false)
-		}
-		if (user) {
-			setNotificationMessage(`${username} has registered!`)
-			navigate('/authentication/login')
 		}
 	}
 
@@ -59,7 +62,7 @@ const Register = () => {
 		<>
 			{isLoggedIn ? (
 				<>
-					<div>{username} already logged in</div>
+					<div>{username} already registered</div>
 					<Link to={'/'}>Home</Link>
 				</>
 			) : (
@@ -109,8 +112,10 @@ const Register = () => {
 								></AuthFormField>
 								<input
 									type="hidden"
-									defaultValue={'user'}
-									{...register('role', { required: true })}
+									{...register('role', {
+										required: true,
+										value: [RoleEnum.user],
+									})}
 								/>
 								<Button type="submit">Submit</Button>
 							</Box>
