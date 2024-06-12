@@ -27,3 +27,6 @@ symbols.json
 *.sw?
 
 TODO.MD
+
+*.env
+*.mongodb.js
