@@ -95,6 +95,14 @@ export const loginUser = async (
 	})
 }
 
+export const deleteUser = (req: Request, res: Response, next: NextFunction) => {
+	// logic for deleting a users account
+}
+
+export const updateUser = (req: Request, res: Response, next: NextFunction) => {
+	// logic for updating a users account
+}
+
 export const accessUser = (req: Request, res: Response, next: NextFunction) => {
 	if (req.headers.authorization) {
 		const token = req.headers.authorization.split(' ')[1]
