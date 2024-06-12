@@ -16,10 +16,10 @@ const Register = () => {
 		handleSubmit,
 		formState: { errors },
 	} = useForm<RegisterFormDataType>({ resolver: zodResolver(registerSchema) })
-	// TODO send form to backend
 	const onSubmit: SubmitHandler<RegisterFormDataType> = async (data) => {
 		try {
 			const response = await registerUser(data)
+			// TODO save response and display message to user, also redirect to home
 			console.log(response)
 		} catch (error: unknown) {
 			if (axios.isAxiosError(error)) {
