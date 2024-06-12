@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs'
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import User from '../model/user'
+import { UserAuthRequest } from './../types'
 
 // @desc Register new user
 // @route POST /api/user/register
@@ -120,28 +121,20 @@ export const updateUser = (req: Request, res: Response, next: NextFunction) => {
 // @desc Get user account info
 // @route GET /api/user/accessUser
 // @access Private
-export const accessUser = (req: Request, res: Response, next: NextFunction) => {
-	if (req.headers.authorization) {
-		const token = req.headers.authorization.split(' ')[1]
-		if (!token) {
-			res
-				.status(200)
-				.json({ success: false, message: 'Error Token was not provided' })
+export const accessUserData = async (
+	req: UserAuthRequest,
+	res: Response,
+	next: NextFunction
+) => {
+	// logic for getting users account data, in a protected route
+	try {
+		const user = await User.findById(req.user?.id)
+		if (!user) {
+			return res.status(404).json({ message: 'User not found' })
 		}
-		const decodedToken = jwt.verify(
-			token,
-			process.env.JWT_SECRET as string
-		) as jwt.JwtPayload
-		if (decodedToken.userId) {
-			// return user data based on userID
-			res.status(200).json({
-				success: true,
-				data: {
-					userId: decodedToken.userId,
-				},
-			})
-		} else {
-			res.status(401).json({ success: false, message: 'User id not found' })
-		}
+		const { username, email, _id, roles } = user
+		res.status(200).json({ userId: _id, username, email, roles })
+	} catch (error) {
+		next(error)
 	}
 }

@@ -1,3 +1,7 @@
+import { Request } from 'express'
+import { Document } from 'mongoose'
+import { RoleEnum } from './schemas/userSchemas'
+
 export type UserStateType = {
 	message: string
 	typing: boolean
@@ -5,7 +9,7 @@ export type UserStateType = {
 }
 export type UserType = {
 	username: string
-	state: UserStateType
+	state?: UserStateType
 }
 export type UsersType = {
 	[key: string]: UserType
@@ -15,4 +19,14 @@ export type MessageType = {
 	from: string
 	content: string
 	timestamp: string
+}
+export type UserAuthRequest = Request & {
+	user?: IUser | null
+}
+export type IUser = {
+	id?: string
+	username?: string
+	email?: string
+	password?: string
+	role?: RoleEnum
 }

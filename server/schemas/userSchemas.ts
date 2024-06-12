@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-enum RoleEnum {
+export enum RoleEnum {
 	user = 'user',
 	admin = 'admin',
 	moderator = 'moderator',
@@ -25,3 +25,7 @@ export const userRegistrationSchema = z
 		message: 'Passwords do not match',
 		path: ['confirmPassword'],
 	})
+
+export type UserLoginType = z.infer<typeof userLoginSchema>
+
+export type userRegistrationType = z.infer<typeof userRegistrationSchema>
