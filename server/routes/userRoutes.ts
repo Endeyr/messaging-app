@@ -14,8 +14,8 @@ const userRouter = express.Router()
 
 userRouter.post('/register', validateData(userRegistrationSchema), registerUser)
 userRouter.post('/login', validateData(userLoginSchema), loginUser)
-userRouter.put('/update', protect, updateUser)
-userRouter.delete('/delete', protect, deleteUser)
-userRouter.get('/accessUser', protect, accessUserData)
+userRouter.put('/update/:id', protect, updateUser)
+userRouter.delete('/delete/:id', protect, deleteUser)
+userRouter.get('/accessUser/:id', protect, accessUserData)
 
 export default userRouter
