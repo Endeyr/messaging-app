@@ -9,6 +9,6 @@ userRouter.post('/register', validateData(userRegistrationSchema), registerUser)
 userRouter.post('/login', validateData(userLoginSchema), loginUser)
 userRouter.put('/update', accessUser)
 userRouter.delete('/delete', accessUser)
-userRouter.get('/accessResources', accessUser)
+userRouter.get('/accessUser', accessUser)
 
 export default userRouter

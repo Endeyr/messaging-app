@@ -1,13 +1,16 @@
+import bcrypt from 'bcryptjs'
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import User from '../model/user'
 
+// @desc Register new user
+// @route POST /api/user/register
+// @access Public
 export const registerUser = async (
 	req: Request,
 	res: Response,
 	next: NextFunction
 ) => {
-	// Handle user already registered
 	const { username, email, password, role } = req.body
 	const newUser = new User({
 		username,
@@ -50,6 +53,9 @@ export const registerUser = async (
 	})
 }
 
+// @desc Login new user
+// @route POST /api/user/login
+// @access Public
 export const loginUser = async (
 	req: Request,
 	res: Response,
@@ -95,14 +101,23 @@ export const loginUser = async (
 	})
 }
 
+// @desc Delete user account
+// @route POST /api/user/delete
+// @access Private
 export const deleteUser = (req: Request, res: Response, next: NextFunction) => {
 	// logic for deleting a users account
 }
 
+// @desc Update user account
+// @route PUT /api/user/update
+// @access Private
 export const updateUser = (req: Request, res: Response, next: NextFunction) => {
 	// logic for updating a users account
 }
 
+// @desc Get user account info
+// @route GET /api/user/accessUser
+// @access Private
 export const accessUser = (req: Request, res: Response, next: NextFunction) => {
 	if (req.headers.authorization) {
 		const token = req.headers.authorization.split(' ')[1]
@@ -116,6 +131,7 @@ export const accessUser = (req: Request, res: Response, next: NextFunction) => {
 			'secretkeyappearshere'
 		) as jwt.JwtPayload
 		if (decodedToken.userId && decodedToken.email) {
+			console.log(decodedToken)
 			res.status(200).json({
 				success: true,
 				data: {
