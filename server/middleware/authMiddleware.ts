@@ -1,15 +1,14 @@
-import { NextFunction, RequestHandler, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import User from '../model/user'
-import { UserAuthRequest } from './../types'
+import { IUser, UserAuthRequest } from './../types'
 
-export const protect: RequestHandler = async (
-	req: UserAuthRequest,
+export const protect = async (
+	req: Request,
 	res: Response,
 	next: NextFunction
 ) => {
 	let token
-
 	if (
 		req.headers.authorization &&
 		req.headers.authorization.startsWith('Bearer')
@@ -20,7 +19,10 @@ export const protect: RequestHandler = async (
 				token,
 				process.env.JWT_SECRET as string
 			) as jwt.JwtPayload
-			req.user = await User.findById(decoded.userId).select('-password')
+			const userReq = req as UserAuthRequest
+			userReq.user = (await User.findById(decoded.userId).select(
+				'-password'
+			)) as IUser
 			next()
 		} catch (error) {
 			console.log(error)

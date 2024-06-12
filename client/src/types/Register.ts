@@ -11,7 +11,7 @@ export type RegisterFormDataType = {
 	email: string
 	password: string
 	confirmPassword: string
-	role: RoleEnum
+	role: RoleEnum[]
 }
 
 export type ValidFieldNamesType = keyof RegisterFormDataType

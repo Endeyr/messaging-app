@@ -1,6 +1,5 @@
 import { Request } from 'express'
 import { Document } from 'mongoose'
-import { RoleEnum } from './schemas/userSchemas'
 
 export type UserStateType = {
 	message: string
@@ -23,10 +22,16 @@ export type MessageType = {
 export type UserAuthRequest = Request & {
 	user?: IUser | null
 }
-export type IUser = {
+export interface IUser extends Document {
 	id?: string
-	username?: string
-	email?: string
-	password?: string
-	role?: RoleEnum
+	username: string
+	email: string
+	password: string
+	role: RoleEnum[]
+}
+
+export enum RoleEnum {
+	user = 'user',
+	admin = 'admin',
+	moderator = 'moderator',
 }

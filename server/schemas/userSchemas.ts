@@ -1,10 +1,5 @@
 import { z } from 'zod'
-
-export enum RoleEnum {
-	user = 'user',
-	admin = 'admin',
-	moderator = 'moderator',
-}
+import { RoleEnum } from '../types'
 
 const roleEnumValues = Object.values(RoleEnum) as [RoleEnum, ...RoleEnum[]]
 
@@ -19,7 +14,7 @@ export const userRegistrationSchema = z
 		email: z.string().email().min(1),
 		password: z.string().min(8),
 		confirmPassword: z.string(),
-		role: z.enum(roleEnumValues),
+		role: z.array(z.enum(roleEnumValues)),
 	})
 	.refine((data) => data.password === data.confirmPassword, {
 		message: 'Passwords do not match',

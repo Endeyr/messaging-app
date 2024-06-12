@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { IUser, RoleEnum } from '../types'
 const { Schema, model } = mongoose
 
 const userSchema = new Schema(
@@ -16,9 +17,11 @@ const userSchema = new Schema(
 			type: String,
 			required: true,
 		},
-		roles: [
+		role: [
 			{
-				type: String,
+				type: [String],
+				enum: Object.values(RoleEnum),
+				default: ['user'],
 			},
 		],
 	},
@@ -27,5 +30,5 @@ const userSchema = new Schema(
 	}
 )
 
-const User = model('User', userSchema)
+const User = model<IUser>('User', userSchema)
 export default User

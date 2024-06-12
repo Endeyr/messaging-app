@@ -11,7 +11,7 @@ export const registerSchema: ZodType<RegisterFormDataType> = z
 			.string()
 			.min(8, { message: 'Password must be at least 8 characters' }),
 		confirmPassword: z.string(),
-		role: z.enum(roleEnumValues),
+		role: z.array(z.enum(roleEnumValues)),
 	})
 	.refine((data) => data.password === data.confirmPassword, {
 		message: 'Passwords do not match',
