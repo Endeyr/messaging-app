@@ -12,34 +12,34 @@ export const registerUser = async (
 	next: NextFunction
 ) => {
 	const { username, email, password, role } = req.body
+	const existingUser = await User.findOne({ email })
+	if (existingUser) {
+		const error = new Error('User already registered')
+		res.status(400).send(error.message)
+	}
+	const salt = await bcrypt.genSalt(10)
+	const hashedPassword = await bcrypt.hash(password, salt)
 	const newUser = new User({
 		username,
 		email,
-		password,
+		password: hashedPassword,
 		role,
 	})
 	try {
-		const existingUser = await User.findOne({ email })
-		if (existingUser) {
-			const error = new Error('User already registered')
-			res.status(401).send(error.message)
-		} else {
-			await newUser.save()
-		}
+		await newUser.save()
 	} catch (err) {
 		console.log(err)
 		const error = err as Error
-		return res.status(401).send(error.message)
+		return res.status(400).send(error.message)
 	}
 	let token
 	try {
 		token = jwt.sign(
 			{
 				userId: newUser.id,
-				email: newUser.email,
 			},
-			'secretkeyappearshere',
-			{ expiresIn: '1h' }
+			process.env.JWT_SECRET as string,
+			{ expiresIn: '30d' }
 		)
 	} catch (err) {
 		console.log(err)
@@ -69,27 +69,29 @@ export const loginUser = async (
 	} catch (err) {
 		console.log(err)
 		const error = err as Error
-		return res.status(401).send(error.message)
+		return res.status(400).send(error.message)
 	}
-	if (!existingUser || existingUser.password !== password) {
+	if (
+		!existingUser ||
+		(await bcrypt.compare(existingUser.password, password))
+	) {
 		const error = new Error('Incorrect email or password')
 		console.log(error)
-		return res.status(401).send(error.message)
+		return res.status(400).send(error.message)
 	}
 	let token
 	try {
 		token = jwt.sign(
 			{
 				userId: existingUser.id,
-				email: existingUser.email,
 			},
-			'secretkeyappearshere',
-			{ expiresIn: '1h' }
+			process.env.JWT_SECRET as string,
+			{ expiresIn: '30d' }
 		)
 	} catch (err) {
 		console.log(err)
 		const error = new Error('Incorrect email or password')
-		return res.status(401).send(error.message)
+		return res.status(400).send(error.message)
 	}
 	res.status(200).json({
 		success: true,
@@ -128,21 +130,18 @@ export const accessUser = (req: Request, res: Response, next: NextFunction) => {
 		}
 		const decodedToken = jwt.verify(
 			token,
-			'secretkeyappearshere'
+			process.env.JWT_SECRET as string
 		) as jwt.JwtPayload
-		if (decodedToken.userId && decodedToken.email) {
-			console.log(decodedToken)
+		if (decodedToken.userId) {
+			// return user data based on userID
 			res.status(200).json({
 				success: true,
 				data: {
 					userId: decodedToken.userId,
-					email: decodedToken.email,
 				},
 			})
 		} else {
-			res
-				.status(401)
-				.json({ success: false, message: 'User id or email not found' })
+			res.status(401).json({ success: false, message: 'User id not found' })
 		}
 	}
 }
