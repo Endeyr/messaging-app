@@ -16,7 +16,7 @@ export const registerUser = async (
 	const existingUser = await User.findOne({ email })
 	if (existingUser) {
 		const error = new Error('User already registered')
-		res.status(400).send(error.message)
+		return res.status(400).send(error.message)
 	}
 	const salt = await bcrypt.genSalt(10)
 	const hashedPassword = await bcrypt.hash(password, salt)
@@ -47,7 +47,7 @@ export const registerUser = async (
 		const error = new Error('Unable to register user')
 		return res.status(401).send(error.message)
 	}
-	res.status(201).json({
+	return res.status(201).json({
 		success: true,
 		message: 'User registered successfully',
 		data: { userId: newUser.id, email: newUser.email, token: token },
@@ -94,7 +94,7 @@ export const loginUser = async (
 		const error = new Error('Incorrect email or password')
 		return res.status(400).send(error.message)
 	}
-	res.status(200).json({
+	return res.status(200).json({
 		success: true,
 		message: 'User logged in successfully',
 		data: {
@@ -133,8 +133,8 @@ export const accessUserData = async (
 			return res.status(404).json({ message: 'User not found' })
 		}
 		const { username, email, _id } = user
-		res.status(200).json({ userId: _id, username, email })
+		return res.status(200).json({ userId: _id, username, email })
 	} catch (error) {
-		next(error)
+		return next(error)
 	}
 }
