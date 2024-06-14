@@ -2,6 +2,7 @@ import axios from 'axios'
 import { LoginFormDataType } from './../types/Login'
 import { RegisterFormDataType } from './../types/Register'
 
+// TODO add bearer token to request
 const API = axios.create({
 	baseURL: 'http://localhost:5174/api/user',
 	headers: {
