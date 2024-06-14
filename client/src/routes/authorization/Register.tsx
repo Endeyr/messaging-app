@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Button, FormControl } from '@mui/material'
 import axios from 'axios'
+import { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useNavigate, useOutletContext } from 'react-router-dom'
 import AuthFormField from '../../components/AuthFormFields'
@@ -20,12 +21,11 @@ const RegisterPage = () => {
 		isLoggedIn,
 	} = useOutletContext<OutletContextType>()
 	const navigate = useNavigate()
-	// client sends http POST request to backend with json of username, email, role, password, ect
-	// backend checks if existing user then saves user to database
-	// backend returns a message of success or failed
 	const {
 		register,
+		reset,
 		handleSubmit,
+		formState,
 		formState: { errors },
 	} = useForm<RegisterFormDataType>({ resolver: zodResolver(registerSchema) })
 	const onSubmit: SubmitHandler<RegisterFormDataType> = async (data) => {
@@ -53,6 +53,18 @@ const RegisterPage = () => {
 			setIsLoading(false)
 		}
 	}
+
+	useEffect(() => {
+		if (formState.isSubmitSuccessful) {
+			reset({
+				username: '',
+				email: '',
+				password: '',
+				confirmPassword: '',
+				role: [RoleEnum.user],
+			})
+		}
+	}, [formState, reset])
 
 	if (isLoading) {
 		return <div>... Loading</div>

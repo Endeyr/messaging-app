@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Button, FormControl } from '@mui/material'
 import axios from 'axios'
+import { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useNavigate, useOutletContext } from 'react-router-dom'
 import LoginFormField from '../../components/LoginFormFields'
@@ -24,7 +25,9 @@ const LoginPage = () => {
 	const navigate = useNavigate()
 	const {
 		register,
+		reset,
 		handleSubmit,
+		formState,
 		formState: { errors },
 	} = useForm<LoginFormDataType>({ resolver: zodResolver(loginSchema) })
 	const onSubmit: SubmitHandler<LoginFormDataType> = async (data) => {
@@ -51,6 +54,15 @@ const LoginPage = () => {
 			navigate('/')
 		}
 	}
+
+	useEffect(() => {
+		if (formState.isSubmitSuccessful) {
+			reset({
+				email: '',
+				password: '',
+			})
+		}
+	}, [formState, reset])
 
 	if (isLoading) {
 		return <div>... Loading</div>
