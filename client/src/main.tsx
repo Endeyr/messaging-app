@@ -11,6 +11,7 @@ import ForgotPasswordOrEmailPage from './routes/authorization/Forgot-Password-Or
 import LoginPage from './routes/authorization/Login.tsx'
 import LogoutPage from './routes/authorization/Logout.tsx'
 import RegisterPage from './routes/authorization/Register.tsx'
+import DashboardPage from './routes/dashboard/index.tsx'
 import Root from './routes/root.tsx'
 import ProfilePage from './routes/user/Profile.tsx'
 import theme from './theme.ts'
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
 			{
 				path: 'user/profile',
 				element: <ProfilePage />,
+			},
+			{
+				path: 'dashboard',
+				element: <DashboardPage />,
 			},
 		],
 	},
