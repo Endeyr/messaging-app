@@ -1,4 +1,4 @@
-const Logout = () => {
-	return <div>Logout</div>
+const LogoutPage = () => {
+	return <div>LogoutPage</div>
 }
-export default Logout
+export default LogoutPage

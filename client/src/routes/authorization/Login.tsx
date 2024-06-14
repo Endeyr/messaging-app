@@ -9,7 +9,7 @@ import { loginUser } from '../../services/api'
 import { OutletContextType } from '../../types/Context'
 import { LoginFormDataType } from '../../types/Login'
 
-const Login = () => {
+const LoginPage = () => {
 	const {
 		setNotificationMessage,
 		username,
@@ -22,9 +22,6 @@ const Login = () => {
 		setIsLoggedIn,
 	} = useOutletContext<OutletContextType>()
 	const navigate = useNavigate()
-	// client sends http POST request to backend with json of username, and password
-	// backend authenticates user and creates a JWT string with a secret
-	// backend returns a json with token, user info, authorities
 	const {
 		register,
 		handleSubmit,
@@ -102,4 +99,4 @@ const Login = () => {
 		</>
 	)
 }
-export default Login
+export default LoginPage

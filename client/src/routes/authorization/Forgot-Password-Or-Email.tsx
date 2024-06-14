@@ -1,4 +1,4 @@
-const ForgotPasswordOrEmail = () => {
-	return <div>ForgotPasswordOrEmail</div>
+const ForgotPasswordOrEmailPage = () => {
+	return <div>ForgotPasswordOrEmailPage</div>
 }
-export default ForgotPasswordOrEmail
+export default ForgotPasswordOrEmailPage

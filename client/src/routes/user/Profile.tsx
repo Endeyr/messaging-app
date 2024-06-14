@@ -1,4 +1,4 @@
-const Profile = () => {
-	return <div>Profile</div>
+const ProfilePage = () => {
+	return <div>ProfilePage</div>
 }
-export default Profile
+export default ProfilePage

@@ -9,7 +9,7 @@ import { registerUser } from '../../services/api'
 import { OutletContextType } from '../../types/Context'
 import { RegisterFormDataType, RoleEnum } from '../../types/Register'
 
-const Register = () => {
+const RegisterPage = () => {
 	const {
 		setNotificationMessage,
 		username,
@@ -126,4 +126,4 @@ const Register = () => {
 		</>
 	)
 }
-export default Register
+export default RegisterPage

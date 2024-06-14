@@ -7,12 +7,12 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import App from './App.tsx'
 import ErrorPage from './error-page.tsx'
 import './index.css'
-import ForgotPasswordOrEmail from './routes/authorization/Forgot-Password-Or-Email.tsx'
-import Login from './routes/authorization/Login.tsx'
-import Logout from './routes/authorization/Logout.tsx'
-import Register from './routes/authorization/Register.tsx'
+import ForgotPasswordOrEmailPage from './routes/authorization/Forgot-Password-Or-Email.tsx'
+import LoginPage from './routes/authorization/Login.tsx'
+import LogoutPage from './routes/authorization/Logout.tsx'
+import RegisterPage from './routes/authorization/Register.tsx'
 import Root from './routes/root.tsx'
-import Profile from './routes/user/Profile.tsx'
+import ProfilePage from './routes/user/Profile.tsx'
 import theme from './theme.ts'
 
 const router = createBrowserRouter([
@@ -27,23 +27,23 @@ const router = createBrowserRouter([
 			},
 			{
 				path: 'authentication/register',
-				element: <Register />,
+				element: <RegisterPage />,
 			},
 			{
 				path: 'authentication/login',
-				element: <Login />,
+				element: <LoginPage />,
 			},
 			{
 				path: 'authentication/logout',
-				element: <Logout />,
+				element: <LogoutPage />,
 			},
 			{
 				path: 'authentication/forgot-password-or-email',
-				element: <ForgotPasswordOrEmail />,
+				element: <ForgotPasswordOrEmailPage />,
 			},
 			{
 				path: 'user/profile',
-				element: <Profile />,
+				element: <ProfilePage />,
 			},
 		],
 	},
