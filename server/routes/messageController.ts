@@ -1,8 +1,11 @@
 import { NextFunction, Response } from 'express'
 import Message from '../model/messages'
 import User from '../model/user'
-import { UserAuthRequest } from './../types'
+import { RoleEnum, UserAuthRequest } from './../types'
 
+// @desc Get all messages for a user
+// @route GET /api/message
+// @access Private
 export const getMessages = async (
 	req: UserAuthRequest,
 	res: Response,
@@ -22,6 +25,9 @@ export const getMessages = async (
 	}
 }
 
+// @desc Send message from user
+// @route POST /api/message
+// @access Private
 export const sendMessage = async (
 	req: UserAuthRequest,
 	res: Response,
@@ -46,6 +52,9 @@ export const sendMessage = async (
 	}
 }
 
+// @desc Delete message from user
+// @route DELETE /api/message/:id
+// @access Private
 export const deleteMessage = async (
 	req: UserAuthRequest,
 	res: Response,
@@ -66,7 +75,10 @@ export const deleteMessage = async (
 		if (!user) {
 			return res.status(401).json({ message: 'User not found' })
 		}
-		if (message?.user.toString() !== user?.id) {
+		if (
+			!req.user?.role.includes(RoleEnum.moderator) ||
+			!req.user?.role.includes(RoleEnum.admin)
+		) {
 			return res
 				.status(401)
 				.json({ message: 'User not authorized to delete message' })
