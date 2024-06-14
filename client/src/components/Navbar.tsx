@@ -16,8 +16,21 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-const pages = ['products', 'pricing', 'blog']
-const settings = ['profile', 'account', 'login', 'register', 'logout']
+type LinkType = {
+	id: number
+	name: string
+	route: string
+}
+const pages: LinkType[] = []
+const loggedInSettings: LinkType[] = [
+	{ id: 1, name: 'Dashboard', route: 'dashboard' },
+	{ id: 2, name: 'Profile', route: 'user/profile' },
+	{ id: 3, name: 'Logout', route: 'authentication/logout' },
+]
+const loggedOutSettings: LinkType[] = [
+	{ id: 1, name: 'Login', route: 'authentication/login' },
+	{ id: 2, name: 'Register', route: 'authentication/register' },
+]
 const Navbar = () => {
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
 	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
@@ -92,18 +105,18 @@ const Navbar = () => {
 							sx={{ display: { xs: 'block', md: 'none' } }}
 						>
 							{pages.map((page) => (
-								<MenuItem key={page} onClick={handleCloseNavMenu}>
+								<MenuItem key={page.id} onClick={handleCloseNavMenu}>
 									<Typography component={'div'} textAlign="center">
 										<Link
 											component={RouterLink}
-											to={`${page}`}
+											to={`${page.route}`}
 											style={{
 												textDecoration: 'none',
 												color: 'inherit',
 												textTransform: 'capitalize',
 											}}
 										>
-											{page}
+											{page.name}
 										</Link>
 									</Typography>
 								</MenuItem>
@@ -141,19 +154,19 @@ const Navbar = () => {
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
 						{pages.map((page) => (
 							<Button
-								key={page}
+								key={page.id}
 								onClick={handleCloseNavMenu}
 								sx={{ my: 2, color: 'white', display: 'block' }}
 							>
 								<Link
 									component={RouterLink}
-									to={`${page}`}
+									to={`${page.route}`}
 									style={{
 										textDecoration: 'none',
 										color: 'inherit',
 									}}
 								>
-									{page}
+									{page.name}
 								</Link>
 							</Button>
 						))}
@@ -181,8 +194,8 @@ const Navbar = () => {
 							open={Boolean(anchorElUser)}
 							onClose={handleCloseUserMenu}
 						>
-							{settings.map((setting) => (
-								<MenuItem key={setting} onClick={handleCloseUserMenu}>
+							{loggedInSettings.map((setting) => (
+								<MenuItem key={setting.id} onClick={handleCloseUserMenu}>
 									<Typography
 										component={'div'}
 										textAlign="center"
@@ -190,13 +203,33 @@ const Navbar = () => {
 									>
 										<Link
 											component={RouterLink}
-											to={`/authentication/${setting}`}
+											to={`/${setting.route}`}
 											style={{
 												textDecoration: 'none',
 												color: 'inherit',
 											}}
 										>
-											{setting}
+											{setting.name}
+										</Link>
+									</Typography>
+								</MenuItem>
+							))}
+							{loggedOutSettings.map((setting) => (
+								<MenuItem key={setting.id} onClick={handleCloseUserMenu}>
+									<Typography
+										component={'div'}
+										textAlign="center"
+										style={{ textTransform: 'capitalize' }}
+									>
+										<Link
+											component={RouterLink}
+											to={`/${setting.route}`}
+											style={{
+												textDecoration: 'none',
+												color: 'inherit',
+											}}
+										>
+											{setting.name}
 										</Link>
 									</Typography>
 								</MenuItem>
