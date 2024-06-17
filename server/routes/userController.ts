@@ -48,14 +48,19 @@ export const registerUser = async (
 	return res.status(201).json({
 		success: true,
 		message: 'User registered successfully',
-		data: { userId: newUser.id, email: newUser.email, token: token },
+		data: {
+			userId: newUser.id,
+			email: newUser.email,
+			username: newUser.username,
+			role: newUser.role,
+			token: token,
+		},
 	})
 }
 
 // @desc Login new user
 // @route POST /api/user/login
 // @access Public
-// TODO fix user can login with incorrect password
 export const loginUser = async (
 	req: Request,
 	res: Response,
@@ -95,7 +100,10 @@ export const loginUser = async (
 		success: true,
 		message: 'User logged in successfully',
 		data: {
+			userId: existingUser.id,
+			email: existingUser.email,
 			username: existingUser.username,
+			role: existingUser.role,
 			token: token,
 		},
 	})
@@ -183,8 +191,8 @@ export const accessUserData = async (
 		if (!req.user) {
 			return res.status(404).json({ message: 'User not found' })
 		}
-		const { username, email, _id } = req.user
-		return res.status(200).json({ userId: _id, username, email })
+		const { username, email, id, role } = req.user
+		return res.status(200).json({ userId: id, username, email, role })
 	} catch (error) {
 		return next(error)
 	}
