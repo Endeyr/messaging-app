@@ -113,8 +113,8 @@ export const deleteUser = async (
 		if (!req.params.id) {
 			return res.status(400).json({ message: 'No id provided' })
 		}
-		const user = await User.findById(req.params.id)
-		if (!user) {
+		const userToDelete = await User.findById(req.params.id)
+		if (!userToDelete) {
 			return res.status(400).json({ message: 'User not found' })
 		}
 		if (!req.user?.role.includes(RoleEnum.admin)) {
@@ -122,7 +122,7 @@ export const deleteUser = async (
 				.status(401)
 				.json({ message: 'User not authorized to delete user' })
 		}
-		await user.deleteOne()
+		await userToDelete.deleteOne()
 		return res
 			.status(200)
 			.json({ id: req.params.id, message: 'User deleted successfully ' })
@@ -144,11 +144,14 @@ export const updateUser = async (
 		if (!req.params.id) {
 			return res.status(400).json({ message: 'No id provided' })
 		}
-		const user = await User.findById(req.params.id)
-		if (!user) {
+		const userToUpdate = await User.findById(req.params.id)
+		if (!userToUpdate) {
 			return res.status(400).json({ message: 'User not found' })
 		}
-		if (req.user?.id !== user.id) {
+		if (
+			req.user?.id !== userToUpdate.id &&
+			!req.user?.role.includes(RoleEnum.admin)
+		) {
 			return res
 				.status(401)
 				.json({ message: 'User not authorized to update user' })
@@ -176,13 +179,11 @@ export const accessUserData = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	// logic for getting users account data, in a protected route
 	try {
-		const user = await User.findById(req.user?.id)
-		if (!user) {
+		if (!req.user) {
 			return res.status(404).json({ message: 'User not found' })
 		}
-		const { username, email, _id } = user
+		const { username, email, _id } = req.user
 		return res.status(200).json({ userId: _id, username, email })
 	} catch (error) {
 		return next(error)
