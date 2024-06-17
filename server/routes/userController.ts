@@ -72,10 +72,13 @@ export const loginUser = async (
 		const error = err as Error
 		return res.status(400).send(error.message)
 	}
-	if (
-		!existingUser ||
-		(await bcrypt.compare(existingUser.password, password))
-	) {
+	if (!existingUser) {
+		const error = new Error('Incorrect email or password')
+		console.log(error)
+		return res.status(400).send(error.message)
+	}
+	const isPasswordValid = await bcrypt.compare(password, existingUser.password)
+	if (!isPasswordValid) {
 		const error = new Error('Incorrect email or password')
 		console.log(error)
 		return res.status(400).send(error.message)
@@ -91,8 +94,8 @@ export const loginUser = async (
 		)
 	} catch (err) {
 		console.log(err)
-		const error = new Error('Incorrect email or password')
-		return res.status(400).send(error.message)
+		const error = new Error('Error generating token')
+		return res.status(500).send(error.message)
 	}
 	return res.status(200).json({
 		success: true,
