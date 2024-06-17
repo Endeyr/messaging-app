@@ -25,7 +25,6 @@ export const protect = async (
 			)) as IUser
 			next()
 		} catch (error) {
-			console.log(error)
 			res.status(401).json({ message: 'Not authorized' })
 		}
 	}

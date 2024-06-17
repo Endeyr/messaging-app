@@ -29,7 +29,6 @@ export const registerUser = async (
 	try {
 		await newUser.save()
 	} catch (err) {
-		console.log(err)
 		const error = err as Error
 		return res.status(400).send(error.message)
 	}
@@ -43,7 +42,6 @@ export const registerUser = async (
 			{ expiresIn: '30d' }
 		)
 	} catch (err) {
-		console.log(err)
 		const error = new Error('Unable to register user')
 		return res.status(401).send(error.message)
 	}
@@ -68,19 +66,16 @@ export const loginUser = async (
 	try {
 		existingUser = await User.findOne({ email })
 	} catch (err) {
-		console.log(err)
 		const error = err as Error
 		return res.status(400).send(error.message)
 	}
 	if (!existingUser) {
 		const error = new Error('Incorrect email or password')
-		console.log(error)
 		return res.status(400).send(error.message)
 	}
 	const isPasswordValid = await bcrypt.compare(password, existingUser.password)
 	if (!isPasswordValid) {
 		const error = new Error('Incorrect email or password')
-		console.log(error)
 		return res.status(400).send(error.message)
 	}
 	let token
@@ -93,7 +88,6 @@ export const loginUser = async (
 			{ expiresIn: '30d' }
 		)
 	} catch (err) {
-		console.log(err)
 		const error = new Error('Error generating token')
 		return res.status(500).send(error.message)
 	}

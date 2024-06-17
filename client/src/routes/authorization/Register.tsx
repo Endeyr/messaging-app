@@ -30,8 +30,9 @@ const RegisterPage = () => {
 			dispatch(userRegister(data))
 		} catch (error: unknown) {
 			if (error instanceof ZodError) {
-				console.log(error.issues)
-				toast.error(error.issues[0].message)
+				error.issues.map((issue) => {
+					toast.error(issue.message)
+				})
 			}
 		}
 	}
