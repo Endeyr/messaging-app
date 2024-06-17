@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { RootState } from '../../app/store'
 import { MessageFormDataType } from '../../types/Message'
 import messageService from './messageService'
 import { MessageType } from './messageTypes'
@@ -12,10 +13,6 @@ type initialStateType = {
 	message: string
 }
 
-const user = localStorage.getItem('user')
-const parsedUser = user ? JSON.parse(user) : null
-console.log(parsedUser)
-
 const initialState: initialStateType = {
 	messages: [],
 	isError: false,
@@ -27,10 +24,14 @@ const initialState: initialStateType = {
 export const createText = createAsyncThunk<
 	MessageType,
 	MessageFormDataType,
-	{ rejectValue: string }
+	{ rejectValue: string; state: RootState }
 >('auth/register', async (text, thunkAPI) => {
 	try {
-		return await messageService.createText(text)
+		const token = thunkAPI.getState().auth.user?.token
+		if (!token) {
+			throw new Error('Token not found')
+		}
+		return await messageService.createText(text, token)
 	} catch (error) {
 		let message: string
 		if (axios.isAxiosError(error)) {
