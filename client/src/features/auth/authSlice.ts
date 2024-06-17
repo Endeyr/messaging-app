@@ -3,10 +3,10 @@ import axios from 'axios'
 import { LoginFormDataType } from '../../types/Login'
 import { RegisterFormDataType } from './../../types/Register'
 import authService from './authService'
-import { UserResponseDataType } from './authTypes'
+import { UserType } from './authTypes'
 
 type InitialStateType = {
-	user: UserResponseDataType | null
+	user: UserType | null
 	isError: boolean
 	isSuccess: boolean
 	isLoading: boolean
@@ -25,7 +25,7 @@ const initialState: InitialStateType = {
 }
 
 export const register = createAsyncThunk<
-	UserResponseDataType,
+	UserType,
 	RegisterFormDataType,
 	{ rejectValue: string }
 >('auth/register', async (user, thunkAPI) => {
@@ -44,7 +44,7 @@ export const register = createAsyncThunk<
 })
 
 export const login = createAsyncThunk<
-	UserResponseDataType,
+	UserType,
 	LoginFormDataType,
 	{ rejectValue: string }
 >('auth/login', async (user, thunkAPI) => {
