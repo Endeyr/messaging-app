@@ -1,20 +1,19 @@
 import { useEffect } from 'react'
-import { useNavigate, useOutletContext } from 'react-router-dom'
-import { OutletContextType } from '../types/Context'
-
+import { useNavigate } from 'react-router-dom'
+import { useAppSelector } from '../app/hooks'
 const Home = () => {
-	const { notificationMessage, username, isLoggedIn } =
-		useOutletContext<OutletContextType>()
+	const { user } = useAppSelector((state) => state.auth)
 	const navigate = useNavigate()
-	// TODO keep user logged in on refresh / changing page
+
 	useEffect(() => {
-		if (!isLoggedIn) {
+		if (!user) {
 			navigate('/authentication/login')
 		}
-	}, [navigate, isLoggedIn])
+	}, [user, navigate])
+
 	return (
 		<>
-			<p>{username + ' ' + notificationMessage}</p>
+			<p>{user && user.username}</p>
 			<div>Welcome Home</div>
 		</>
 	)

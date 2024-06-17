@@ -1,80 +1,61 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Button, FormControl } from '@mui/material'
-import axios from 'axios'
 import { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { Link, useNavigate, useOutletContext } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { ZodError } from 'zod'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import AuthFormField from '../../components/AuthFormFields'
+import {
+	register as userRegister,
+	reset as userReset,
+} from '../../features/auth/authSlice'
 import { registerSchema } from '../../schema/RegisterSchema'
-import { registerUser } from '../../services/api'
-import { OutletContextType } from '../../types/Context'
 import { RegisterFormDataType, RoleEnum } from '../../types/Register'
 
 const RegisterPage = () => {
-	const {
-		setNotificationMessage,
-		username,
-		errorMessage,
-		setErrorMessage,
-		isLoading,
-		setIsLoading,
-		isLoggedIn,
-	} = useOutletContext<OutletContextType>()
 	const navigate = useNavigate()
+	const dispatch = useAppDispatch()
+	const { user, isLoading, isError, isSuccess, message } = useAppSelector(
+		(state) => state.auth
+	)
 	const {
 		register,
-		reset,
 		handleSubmit,
-		formState,
 		formState: { errors },
 	} = useForm<RegisterFormDataType>({ resolver: zodResolver(registerSchema) })
 	const onSubmit: SubmitHandler<RegisterFormDataType> = async (data) => {
 		try {
-			setIsLoading(true)
-			const response = await registerUser(data)
-			if (response.data.success) {
-				setNotificationMessage('User registered')
-			} else {
-				setNotificationMessage('Problem registering user')
-			}
-			navigate('/authentication/login')
+			dispatch(userRegister(data))
 		} catch (error: unknown) {
-			if (axios.isAxiosError(error)) {
-				const errorMessage =
-					error.response?.data.errors[0]?.message ||
-					error.response?.data.message ||
-					'An error occurred'
-				setErrorMessage(errorMessage)
-			} else {
-				console.log('An error occurred', error)
-				setErrorMessage('An error occurred')
+			if (error instanceof ZodError) {
+				console.log(error.issues)
+				toast.error(error.issues[0].message)
 			}
-		} finally {
-			setIsLoading(false)
 		}
 	}
 
 	useEffect(() => {
-		if (formState.isSubmitSuccessful) {
-			reset({
-				username: '',
-				email: '',
-				password: '',
-				confirmPassword: '',
-				role: [RoleEnum.user],
-			})
+		if (isError) {
+			toast.error(message)
 		}
-	}, [formState, reset])
+		if (isSuccess || user) {
+			navigate('/')
+		}
+		dispatch(userReset())
+	}, [user, isError, isSuccess, message, navigate, dispatch])
 
 	if (isLoading) {
+		// TODO loading spinner / page
 		return <div>... Loading</div>
 	}
 
 	return (
 		<>
-			{isLoggedIn ? (
+			{user ? (
 				<>
-					<div>{username} already registered</div>
+					<div>{user.username} already registered</div>
 					<Link to={'/'}>Home</Link>
 				</>
 			) : (
@@ -83,9 +64,6 @@ const RegisterPage = () => {
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<FormControl fullWidth>
 							<Box width="100%" gap={4} display="flex" flexDirection="column">
-								{errorMessage && (
-									<div style={{ color: 'red' }}>{errorMessage}</div>
-								)}
 								<AuthFormField
 									type="text"
 									label="username"

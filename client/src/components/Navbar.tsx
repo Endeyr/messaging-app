@@ -15,23 +15,28 @@ import {
 	Typography,
 } from '@mui/material'
 import { useState } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
+import { logout, reset } from '../features/auth/authSlice'
 type LinkType = {
 	id: number
 	name: string
-	route: string
+	route?: string
 }
 const pages: LinkType[] = []
 const loggedInSettings: LinkType[] = [
 	{ id: 1, name: 'Dashboard', route: 'dashboard' },
 	{ id: 2, name: 'Profile', route: 'user/profile' },
-	{ id: 3, name: 'Logout', route: 'authentication/logout' },
+	{ id: 3, name: 'Logout' },
 ]
 const loggedOutSettings: LinkType[] = [
-	{ id: 1, name: 'Login', route: 'authentication/login' },
-	{ id: 2, name: 'Register', route: 'authentication/register' },
+	{ id: 1, name: 'Register', route: 'authentication/register' },
+	{ id: 2, name: 'Login', route: 'authentication/login' },
 ]
 const Navbar = () => {
+	const navigate = useNavigate()
+	const dispatch = useAppDispatch()
+	const { user } = useAppSelector((state) => state.auth)
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
 	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
 
@@ -48,6 +53,14 @@ const Navbar = () => {
 
 	const handleCloseUserMenu = () => {
 		setAnchorElUser(null)
+	}
+
+	const onLogout = () => {
+		if (user) {
+			dispatch(logout())
+			dispatch(reset())
+			navigate('/')
+		}
 	}
 	return (
 		<AppBar position="static">
@@ -194,46 +207,63 @@ const Navbar = () => {
 							open={Boolean(anchorElUser)}
 							onClose={handleCloseUserMenu}
 						>
-							{loggedInSettings.map((setting) => (
-								<MenuItem key={setting.id} onClick={handleCloseUserMenu}>
-									<Typography
-										component={'div'}
-										textAlign="center"
-										style={{ textTransform: 'capitalize' }}
-									>
-										<Link
-											component={RouterLink}
-											to={`/${setting.route}`}
-											style={{
-												textDecoration: 'none',
-												color: 'inherit',
-											}}
-										>
-											{setting.name}
-										</Link>
-									</Typography>
-								</MenuItem>
-							))}
-							{loggedOutSettings.map((setting) => (
-								<MenuItem key={setting.id} onClick={handleCloseUserMenu}>
-									<Typography
-										component={'div'}
-										textAlign="center"
-										style={{ textTransform: 'capitalize' }}
-									>
-										<Link
-											component={RouterLink}
-											to={`/${setting.route}`}
-											style={{
-												textDecoration: 'none',
-												color: 'inherit',
-											}}
-										>
-											{setting.name}
-										</Link>
-									</Typography>
-								</MenuItem>
-							))}
+							{!user ? (
+								<div>
+									{loggedOutSettings.map((setting) => (
+										<MenuItem key={setting.id} onClick={handleCloseUserMenu}>
+											<Typography
+												component={'div'}
+												textAlign="center"
+												style={{ textTransform: 'capitalize' }}
+											>
+												<Button color="inherit">
+													<Link
+														component={RouterLink}
+														to={`/${setting.route}`}
+														style={{
+															textDecoration: 'none',
+															color: 'inherit',
+														}}
+													>
+														{setting.name}
+													</Link>
+												</Button>
+											</Typography>
+										</MenuItem>
+									))}
+								</div>
+							) : (
+								<div>
+									{loggedInSettings.map((setting) => (
+										<MenuItem key={setting.id} onClick={handleCloseUserMenu}>
+											<Typography
+												component={'div'}
+												textAlign="center"
+												style={{ textTransform: 'capitalize' }}
+											>
+												{setting.name !== 'Logout' ? (
+													<Button color="inherit">
+														<Link
+															component={RouterLink}
+															to={`/${setting.route}`}
+															style={{
+																textDecoration: 'none',
+																color: 'inherit',
+															}}
+														>
+															{setting.name}
+														</Link>
+													</Button>
+												) : (
+													<Button color="error" onClick={onLogout}>
+														{setting.name}
+													</Button>
+												)}
+											</Typography>
+										</MenuItem>
+									))}
+								</div>
+							)}
 						</Menu>
 					</Box>
 				</Toolbar>

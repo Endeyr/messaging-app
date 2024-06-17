@@ -1,78 +1,61 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Button, FormControl } from '@mui/material'
-import axios from 'axios'
 import { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { Link, useNavigate, useOutletContext } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { ZodError } from 'zod'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import LoginFormField from '../../components/LoginFormFields'
+import {
+	login as userLogin,
+	reset as userReset,
+} from '../../features/auth/authSlice'
 import { loginSchema } from '../../schema/LoginSchema'
-import { loginUser } from '../../services/api'
-import { OutletContextType } from '../../types/Context'
 import { LoginFormDataType } from '../../types/Login'
 
 const LoginPage = () => {
-	const {
-		setNotificationMessage,
-		username,
-		setUsername,
-		errorMessage,
-		setErrorMessage,
-		isLoading,
-		setIsLoading,
-		isLoggedIn,
-		setIsLoggedIn,
-	} = useOutletContext<OutletContextType>()
 	const navigate = useNavigate()
+	const dispatch = useAppDispatch()
+	const { user, isLoading, isError, isSuccess, message } = useAppSelector(
+		(state) => state.auth
+	)
 	const {
 		register,
-		reset,
 		handleSubmit,
-		formState,
 		formState: { errors },
 	} = useForm<LoginFormDataType>({ resolver: zodResolver(loginSchema) })
 	const onSubmit: SubmitHandler<LoginFormDataType> = async (data) => {
-		let user
 		try {
-			setIsLoading(true)
-			const response = await loginUser(data)
-			user = response.data.data.username
+			dispatch(userLogin(data))
 		} catch (error: unknown) {
-			if (axios.isAxiosError(error)) {
-				console.error(error.response?.data)
-				setErrorMessage(error.response?.data)
-			} else {
-				console.log('An error occurred', error)
-				setErrorMessage('An error occurred')
+			if (error instanceof ZodError) {
+				console.log(error.issues)
+				toast.error(error.issues[0].message)
 			}
-		} finally {
-			setIsLoading(false)
-		}
-		if (user) {
-			setUsername(user)
-			setNotificationMessage(`${username} has logged in!`)
-			setIsLoggedIn(true)
-			navigate('/')
 		}
 	}
 
 	useEffect(() => {
-		if (formState.isSubmitSuccessful) {
-			reset({
-				email: '',
-				password: '',
-			})
+		if (isError) {
+			toast.error(message)
 		}
-	}, [formState, reset])
+		if (isSuccess || user) {
+			navigate('/')
+		}
+		dispatch(userReset())
+	}, [user, isError, isSuccess, message, navigate, dispatch])
 
 	if (isLoading) {
+		// TODO Loading spinner
 		return <div>... Loading</div>
 	}
 
 	return (
 		<>
-			{isLoggedIn ? (
+			{user ? (
 				<>
-					<div>{username} already logged in</div>
+					<div>{user.username} already logged in</div>
 					<Link to={'/'}>Home</Link>
 				</>
 			) : (
@@ -81,9 +64,6 @@ const LoginPage = () => {
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<FormControl fullWidth>
 							<Box width="100%" gap={4} display="flex" flexDirection="column">
-								{errorMessage && (
-									<div style={{ color: 'red' }}>{errorMessage}</div>
-								)}
 								<LoginFormField
 									type="email"
 									label="email"

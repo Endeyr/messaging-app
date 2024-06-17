@@ -10,7 +10,9 @@ export const registerSchema: ZodType<RegisterFormDataType> = z
 		password: z
 			.string()
 			.min(8, { message: 'Password must be at least 8 characters' }),
-		confirmPassword: z.string(),
+		confirmPassword: z
+			.string()
+			.min(8, { message: 'Password must be at least 8 characters' }),
 		role: z.array(z.enum(roleEnumValues)),
 	})
 	.refine((data) => data.password === data.confirmPassword, {

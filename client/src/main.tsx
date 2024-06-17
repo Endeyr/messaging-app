@@ -3,13 +3,16 @@ import { ThemeProvider } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { Provider } from 'react-redux'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import App from './App.tsx'
+import { store } from './app/store.ts'
 import ErrorPage from './error-page.tsx'
 import './index.css'
 import ForgotPasswordOrEmailPage from './routes/authorization/Forgot-Password-Or-Email.tsx'
 import LoginPage from './routes/authorization/Login.tsx'
-import LogoutPage from './routes/authorization/Logout.tsx'
 import RegisterPage from './routes/authorization/Register.tsx'
 import DashboardPage from './routes/dashboard/index.tsx'
 import Root from './routes/root.tsx'
@@ -35,10 +38,6 @@ const router = createBrowserRouter([
 				element: <LoginPage />,
 			},
 			{
-				path: 'authentication/logout',
-				element: <LogoutPage />,
-			},
-			{
 				path: 'authentication/forgot-password-or-email',
 				element: <ForgotPasswordOrEmailPage />,
 			},
@@ -58,7 +57,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
 		<CssBaseline />
 		<ThemeProvider theme={theme}>
-			<RouterProvider router={router} />
+			<Provider store={store}>
+				<ToastContainer />
+				<RouterProvider router={router} />
+			</Provider>
 		</ThemeProvider>
 	</React.StrictMode>
 )

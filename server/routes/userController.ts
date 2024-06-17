@@ -57,6 +57,7 @@ export const registerUser = async (
 // @desc Login new user
 // @route POST /api/user/login
 // @access Public
+// TODO fix user can login with incorrect password
 export const loginUser = async (
 	req: Request,
 	res: Response,
