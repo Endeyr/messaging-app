@@ -7,6 +7,7 @@ import { RoleEnum, UserAuthRequest } from './../types'
 // @desc Register new user
 // @route POST /api/user/register
 // @access Public
+// TODO fix user role, currently an array in an array [['user']]
 export const registerUser = async (
 	req: Request,
 	res: Response,
