@@ -75,19 +75,19 @@ export const deleteMessage = async (
 		if (!user) {
 			return res.status(401).json({ message: 'User not found' })
 		}
-		if (
-			!req.user?.role.includes(RoleEnum.moderator) ||
-			!req.user?.role.includes(RoleEnum.admin)
-		) {
-			return res
-				.status(401)
-				.json({ message: 'User not authorized to delete message' })
-		} else {
-			await message?.deleteOne()
-			return res
-				.status(200)
-				.json({ id: req.params.id, message: 'Message deleted successfully' })
-		}
+		// TODO only allow mods + admin to delete messages
+		// if (
+		// 	!req.user?.role.includes(RoleEnum.moderator) ||
+		// 	!req.user?.role.includes(RoleEnum.admin)
+		// ) {
+		// 	return res
+		// 		.status(401)
+		// 		.json({ message: 'User not authorized to delete message' })
+		// }
+		await message?.deleteOne()
+		return res
+			.status(200)
+			.json({ id: req.params.id, message: 'Message deleted successfully' })
 	} catch (error) {
 		console.error('Error deleting message:', error)
 		return res.status(500).json({ message: 'Server error' })
