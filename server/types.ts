@@ -1,21 +1,13 @@
 import { Request } from 'express'
 import { Document } from 'mongoose'
 
-export type UserStateType = {
-	message: string
-	typing: boolean
-	onlineStatus: 'online' | 'offline'
-}
 export type UserType = {
 	username: string
-	state?: UserStateType
+	email: string
 }
-export type UsersType = {
-	[key: string]: UserType
-}
+
 export type MessageType = {
-	room: string
-	from: string
+	author: string
 	content: string
 	timestamp: string
 }
@@ -34,4 +26,9 @@ export enum RoleEnum {
 	user = 'user',
 	admin = 'admin',
 	moderator = 'moderator',
+}
+
+export type SessionType = {
+	username: string
+	session: string
 }

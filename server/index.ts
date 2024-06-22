@@ -6,22 +6,23 @@ import express from 'express'
 import http from 'http'
 import mongoose from 'mongoose'
 import path from 'path'
-import { Server } from 'socket.io'
+import * as socketio from 'socket.io'
 import { v4 as uuidv4 } from 'uuid'
+import { CLIENT_HOST, PORT } from './config'
 import messageRouter from './routes/messageRoutes'
 import userRouter from './routes/userRoutes'
-import { MessageType, UsersType } from './types'
+import { MessageType, SessionType, UserType } from './types'
+import { getUniqueUsersOnlineByUsername } from './utils'
 
 dotenv.config()
 const app = express()
-const PORT = 5174
 app.use(express.static(path.join(__dirname, 'build')))
 app.use(cors())
 
-const server = http.createServer(app)
-const io = new Server(server, {
+const server: http.Server = http.createServer(app)
+const io: socketio.Server = new socketio.Server(server, {
 	cors: {
-		origin: 'http://127.0.0.1:5173',
+		origin: CLIENT_HOST,
 		methods: ['GET', 'POST'],
 	},
 })
@@ -31,22 +32,29 @@ app.use(bodyParser.json())
 app.use('/api/user', userRouter)
 app.use('/message', messageRouter)
 
-const users: UsersType = {}
+let users: UserType[] = []
 const messages: MessageType[] = []
+let activeUserSessions: SessionType[] = []
 
 io.on('connection', (socket) => {
+	const { id } = socket
 	console.log(`User Connected: ${socket.id}`)
-	socket.on('send_username', (username) => {
-		console.log(`User ${username} has joined`)
-		const uuid = uuidv4()
-		users[uuid] = {
-			username,
-			state: {
-				message: '',
-				typing: false,
-				onlineStatus: 'offline',
-			},
+
+	socket.on('new login', (user: UserType) => {
+		if (
+			!users.some((existingUser) => existingUser.username === user.username)
+		) {
+			users = [...users, user]
+			io.emit('new user added', user)
 		}
+
+		socket.data.username = user.username
+		activeUserSessions.push({
+			session: id,
+			username: user.username,
+		})
+
+		io.emit('users online', getUniqueUsersOnlineByUsername(activeUserSessions))
 	})
 
 	socket.on('join_room', (room, username) => {
@@ -54,18 +62,28 @@ io.on('connection', (socket) => {
 		socket.join(room)
 	})
 
-	socket.on('send_message', (data) => {
-		console.log(`Message from ${data.room}: ${data.content} - ${data.from}}`)
-		messages.push({
-			room: data.room,
-			content: data.content,
-			from: data.from,
-			timestamp: date.format(new Date(), 'HH:mm:ss DD/MM/YYYY'),
-		})
-		const roomMessages = messages.filter(
-			(message) => message.room === data.room
+	socket.on('send_message', (message: MessageType) => {
+		console.log(`message: ${message.author}: ${message.content}`)
+		messages.push(message)
+		socket.emit('receive_message', message)
+	})
+
+	socket.on('typing', (username: string) => {
+		console.log(`User typing: ${username}`)
+		io.emit('user starts typing', username)
+	})
+
+	socket.on('stopped typing', (username: string) => {
+		console.log(`User stopped typing: ${username}`)
+		io.emit('user stopped typing', username)
+	})
+
+	socket.on('disconnect', () => {
+		console.log(`user disconnected: ${socket.data.username}`)
+		activeUserSessions = activeUserSessions.filter(
+			(user) => !(user.username === socket.data.username && user.session === id)
 		)
-		socket.to(data.room).emit('receive_message', roomMessages)
+		io.emit('users online', getUniqueUsersOnlineByUsername(activeUserSessions))
 	})
 })
 
@@ -76,7 +94,7 @@ mongoose
 	.then(() => {
 		server
 			.listen(PORT, () => {
-				console.log('SERVER IS RUNNING')
+				console.log(`SERVER IS RUNNING ON ${PORT}`)
 			})
 			// Fix for error EADDRINUSE
 			.on('error', function (err) {

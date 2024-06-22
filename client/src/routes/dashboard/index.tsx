@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import Message from '../../components/Message'
 import Messenger from '../../components/Messenger'
+import Socket from '../../components/Socket'
 import { getMessages, reset } from '../../features/message/messageSlice'
 import { MessageType } from '../../features/message/messageTypes'
 // @desc All of users friends, messages, ect?
 // @private Must be logged in
+
 const DashboardPage = () => {
 	const navigate = useNavigate()
 	const dispatch = useAppDispatch()
@@ -36,6 +38,7 @@ const DashboardPage = () => {
 				<h1>{user && user.username}</h1>
 				<p>Messages Dashboard</p>
 			</section>
+			<Socket />
 			<Messenger />
 			{isError && message && <div style={{ color: 'red' }}>{message}</div>}
 			{messages &&
