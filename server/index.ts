@@ -20,6 +20,7 @@ app.use(express.static(path.join(__dirname, 'build')))
 app.use(cors())
 
 const server: http.Server = http.createServer(app)
+
 const io: socketio.Server = new socketio.Server(server, {
 	cors: {
 		origin: CLIENT_HOST,
