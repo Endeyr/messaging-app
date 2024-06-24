@@ -10,7 +10,16 @@ import {
 const Socket = () => {
 	const dispatch = useAppDispatch()
 	const { user } = useAppSelector((state) => state.auth)
+	const { rooms } = useAppSelector((state) => state.socket)
 	const [room, setRoom] = useState('')
+	const [isInRoom, setIsInRoom] = useState(false)
+
+	useEffect(() => {
+		socket.connect()
+		return () => {
+			socket.disconnect()
+		}
+	}, [])
 
 	useEffect(() => {
 		const onConnect = () => {
@@ -19,25 +28,45 @@ const Socket = () => {
 		const onDisconnect = () => {
 			dispatch(connectionLost())
 		}
-		socket.on('connect', onConnect)
-		socket.on('disconnect', onDisconnect)
+		socket.on('connection', onConnect)
+		socket.on('disconnection', onDisconnect)
 
 		return () => {
 			socket.off('connect', onConnect)
 			socket.off('disconnect', onDisconnect)
 		}
 	}, [dispatch])
+
+	const handleJoinRoom = (e: React.FormEvent) => {
+		e.preventDefault()
+		const username = user?.username as string
+		dispatch(joinRoom({ room, username }))
+		setIsInRoom(true)
+	}
 	return (
 		<>
 			<div className="App">
 				{user && <p>Connection Status: {user.username + ' is connected'}</p>}
-				<input
-					placeholder="Room Number..."
-					onChange={(event) => {
-						setRoom(event.target.value)
-					}}
-				/>
-				<button onClick={() => dispatch(joinRoom({ room }))}> Join Room</button>
+				{!isInRoom && rooms.length === 0 ? (
+					<>
+						<form onSubmit={handleJoinRoom}>
+							<input
+								placeholder="Room Number..."
+								value={room}
+								onChange={(e) => {
+									setRoom(e.target.value)
+								}}
+							/>
+							<button type="submit"> Join Room</button>
+						</form>
+					</>
+				) : (
+					<>
+						{rooms.map((rm, idx) => {
+							return <p key={idx}>Room: {rm}</p>
+						})}
+					</>
+				)}
 			</div>
 		</>
 	)

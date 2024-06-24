@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { IUser, RoleEnum } from '../types'
+import { IUser, RoleEnum } from '../types/types'
 const { Schema, model } = mongoose
 
 const userSchema = new Schema(

@@ -4,8 +4,6 @@ import {
 	connectionEstablished,
 	connectionLost,
 	initSocket,
-	joinRoom,
-	leaveRoom,
 } from '../features/socket/socketSlice'
 import type { SocketInterface } from './SocketFactory'
 import SocketFactory from './SocketFactory'
@@ -13,8 +11,6 @@ import SocketFactory from './SocketFactory'
 enum SocketEvent {
 	Connect = 'connect',
 	Disconnect = 'disconnect',
-	JoinRoom = 'join-room',
-	LeaveRoom = 'leave-room',
 	Error = 'err',
 }
 
@@ -41,15 +37,6 @@ const socketMiddleware: Middleware = (store) => {
 			}
 		}
 
-		if (joinRoom.match(action) && socket) {
-			const room = action.payload.room
-			socket.socket.emit(SocketEvent.JoinRoom, room)
-		}
-
-		if (leaveRoom.match(action) && socket) {
-			const room = action.payload.room
-			socket.socket.emit(SocketEvent.LeaveRoom, room)
-		}
 		next(action)
 	}
 }

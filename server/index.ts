@@ -1,18 +1,17 @@
+import { instrument } from '@socket.io/admin-ui'
 import bodyParser from 'body-parser'
 import cors from 'cors'
-import date from 'date-and-time'
 import dotenv from 'dotenv'
 import express from 'express'
 import http from 'http'
 import mongoose from 'mongoose'
 import path from 'path'
 import * as socketio from 'socket.io'
-import { v4 as uuidv4 } from 'uuid'
 import { CLIENT_HOST, PORT } from './config'
 import messageRouter from './routes/messageRoutes'
 import userRouter from './routes/userRoutes'
-import { MessageType, SessionType, UserType } from './types'
-import { getUniqueUsersOnlineByUsername } from './utils'
+import { MessageType, SessionType, UserType } from './types/types'
+import { getUniqueUsersOnlineByUsername } from './utils/utils'
 
 dotenv.config()
 const app = express()
@@ -28,6 +27,11 @@ const io: socketio.Server = new socketio.Server(server, {
 	},
 })
 
+instrument(io, {
+	auth: false,
+	mode: 'development',
+})
+
 app.use(express.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use('/api/user', userRouter)
@@ -39,16 +43,15 @@ let activeUserSessions: SessionType[] = []
 
 io.on('connection', (socket) => {
 	const { id } = socket
-	console.log(`User Connected: ${socket.id}`)
+	console.log(`User Connected to Socket: ${socket.id}`)
 
-	socket.on('new login', (user: UserType) => {
+	socket.on('new user', (user: UserType) => {
 		if (
 			!users.some((existingUser) => existingUser.username === user.username)
 		) {
 			users = [...users, user]
 			io.emit('new user added', user)
 		}
-
 		socket.data.username = user.username
 		activeUserSessions.push({
 			session: id,
@@ -58,15 +61,22 @@ io.on('connection', (socket) => {
 		io.emit('users online', getUniqueUsersOnlineByUsername(activeUserSessions))
 	})
 
-	socket.on('join_room', (room, username) => {
+	socket.on('join room', (room, username) => {
 		console.log(`User ${username} joined room ${room}`)
 		socket.join(room)
+		socket.emit('user joined room', `User ${username} joined room ${room}`)
 	})
 
-	socket.on('send_message', (message: MessageType) => {
+	socket.on('leave room', (room, username) => {
+		console.log(`User ${username} left ${room}`)
+		socket.leave(room)
+		socket.emit('user left room', `User ${username} left ${room}`)
+	})
+
+	socket.on('send message', (message: MessageType) => {
 		console.log(`message: ${message.author}: ${message.content}`)
 		messages.push(message)
-		socket.emit('receive_message', message)
+		socket.emit('receive message', message)
 	})
 
 	socket.on('typing', (username: string) => {

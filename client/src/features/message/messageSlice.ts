@@ -3,15 +3,11 @@ import axios from 'axios'
 import { RootState } from '../../app/store'
 import { MessageFormDataType } from '../../types/Message'
 import messageService from './messageService'
-import { MessageDeleteType, MessageType } from './messageTypes'
-
-type initialStateType = {
-	messages: MessageType[]
-	isError: boolean
-	isSuccess: boolean
-	isLoading: boolean
-	message: string
-}
+import {
+	MessageDeleteType,
+	MessageType,
+	initialStateType,
+} from './messageTypes'
 
 const initialState: initialStateType = {
 	messages: [],

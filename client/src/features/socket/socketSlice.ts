@@ -1,10 +1,42 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { RoomAction, SocketStateType } from './socketTypes'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { UserType } from '../auth/authTypes'
+import socketService from './socketService'
+import { SocketStateType, joinRoomType } from './socketTypes'
 
 const initialState: SocketStateType = {
 	isConnected: false,
 	rooms: [],
+	isSuccess: false,
 }
+
+export const newUser = createAsyncThunk<
+	void,
+	UserType,
+	{ rejectValue: string }
+>('socket/newUser', (user) => {
+	socketService.newUser(user)
+	return
+})
+
+export const joinRoom = createAsyncThunk<
+	string,
+	joinRoomType,
+	{ rejectValue: string }
+>('socket/joinRoom', (args: joinRoomType) => {
+	const { room, username } = args
+	socketService.joinRoom(room, username)
+	return room
+})
+
+export const leaveRoom = createAsyncThunk<
+	string,
+	joinRoomType,
+	{ rejectValue: string }
+>('socket/leaveRoom', (args: joinRoomType) => {
+	const { room, username } = args
+	socketService.leaveRoom(room, username)
+	return room
+})
 
 const socketSlice = createSlice({
 	name: 'socket',
@@ -19,28 +51,19 @@ const socketSlice = createSlice({
 		connectionLost: (state) => {
 			state.isConnected = false
 		},
-		joinRoom: (state, action: RoomAction) => {
-			const room = action.payload.room
-			if (!state.rooms.includes(room)) {
-				state.rooms = state.rooms.concat(room)
-			}
-			return
-		},
-		leaveRoom: (state, action: RoomAction) => {
-			const room = action.payload.room
-			if (state.rooms.includes(room)) {
-				state.rooms = state.rooms.filter((rm) => rm !== room)
-			}
-			return
-		},
+		reset: () => initialState,
+	},
+	extraReducers: (builder) => {
+		builder
+			.addCase(joinRoom.fulfilled, (state, action) => {
+				state.rooms.push(action.payload)
+			})
+			.addCase(leaveRoom.fulfilled, (state, action) => {
+				state.rooms = state.rooms.filter((rm) => rm !== action.payload)
+			})
 	},
 })
 
-export const {
-	initSocket,
-	connectionEstablished,
-	connectionLost,
-	joinRoom,
-	leaveRoom,
-} = socketSlice.actions
+export const { initSocket, connectionEstablished, connectionLost, reset } =
+	socketSlice.actions
 export default socketSlice.reducer

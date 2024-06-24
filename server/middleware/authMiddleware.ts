@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import User from '../model/user'
-import { IUser, UserAuthRequest } from './../types'
+import { IUser, UserAuthRequest } from '../types/types'
 
 export const protect = async (
 	req: Request,

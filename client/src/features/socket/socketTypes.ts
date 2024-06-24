@@ -1,9 +1,10 @@
-import type { PayloadAction } from '@reduxjs/toolkit'
-
 export type SocketStateType = {
-	isConnected: boolean
 	rooms: string[]
+	isConnected: boolean
+	isSuccess: boolean
 }
-export type RoomAction = PayloadAction<{
+
+export type joinRoomType = {
 	room: string
-}>
+	username: string
+}

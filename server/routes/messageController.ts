@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express'
 import Message from '../model/messages'
 import User from '../model/user'
-import { RoleEnum, UserAuthRequest } from './../types'
+import { RoleEnum, UserAuthRequest } from '../types/types'
 
 // @desc Get all messages for a user
 // @route GET /api/message

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { RoleEnum } from '../types'
+import { RoleEnum } from '../types/types'
 
 const roleEnumValues = Object.values(RoleEnum) as [RoleEnum, ...RoleEnum[]]
 

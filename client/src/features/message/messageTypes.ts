@@ -10,3 +10,11 @@ export type MessageDeleteType = {
 	id: string
 	message: string
 }
+
+export type initialStateType = {
+	messages: MessageType[]
+	isError: boolean
+	isSuccess: boolean
+	isLoading: boolean
+	message: string
+}

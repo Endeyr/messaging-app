@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs'
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import User from '../model/user'
-import { RoleEnum, UserAuthRequest } from './../types'
+import { RoleEnum, UserAuthRequest } from '../types/types'
 
 // @desc Register new user
 // @route POST /api/user/register

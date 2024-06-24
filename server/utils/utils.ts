@@ -1,4 +1,4 @@
-import { SessionType } from './types'
+import { SessionType } from '../types/types'
 
 export function getUniqueUsersOnlineByUsername(
 	activeUserSessions: SessionType[]
