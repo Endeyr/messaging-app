@@ -1,15 +1,16 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { createAppSlice } from '../../app/createAppSlice'
 import { RootState } from '../../app/store'
 import { MessageFormDataType } from '../../types/Message'
 import messageService from './messageService'
 import {
 	MessageDeleteType,
+	MessageStateType,
 	MessageType,
-	initialStateType,
 } from './messageTypes'
 
-const initialState: initialStateType = {
+const initialState: MessageStateType = {
 	messages: [],
 	isError: false,
 	isSuccess: false,
@@ -89,11 +90,27 @@ export const deleteMessage = createAsyncThunk<
 	}
 })
 
-export const messageSlice = createSlice({
+export const messageSlice = createAppSlice({
 	name: 'messages',
 	initialState,
 	reducers: {
 		reset: () => initialState,
+		messageSent: (state, action: PayloadAction<MessageType>) => {
+			const existingMessage = state.messages.find(
+				(msg) => msg._id === action.payload._id
+			)
+			if (!existingMessage) {
+				state.messages.push(action.payload)
+			}
+		},
+		socketMessageReceived: (state, action: PayloadAction<MessageType>) => {
+			const existingMessage = state.messages.find(
+				(msg) => msg._id === action.payload._id
+			)
+			if (!existingMessage) {
+				state.messages.push(action.payload)
+			}
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -105,11 +122,14 @@ export const messageSlice = createSlice({
 				state.isSuccess = true
 				state.messages.push(action.payload)
 			})
-			.addCase(createText.rejected, (state, action) => {
-				state.isLoading = false
-				state.isError = true
-				state.message = action.payload as string
-			})
+			.addCase(
+				createText.rejected,
+				(state, action: PayloadAction<string | undefined>) => {
+					state.isLoading = false
+					state.isError = true
+					state.message = action.payload || 'Failed to create text'
+				}
+			)
 			.addCase(getMessages.pending, (state) => {
 				state.isLoading = true
 			})
@@ -118,11 +138,14 @@ export const messageSlice = createSlice({
 				state.isSuccess = true
 				state.messages = action.payload
 			})
-			.addCase(getMessages.rejected, (state, action) => {
-				state.isLoading = false
-				state.isError = true
-				state.message = action.payload as string
-			})
+			.addCase(
+				getMessages.rejected,
+				(state, action: PayloadAction<string | undefined>) => {
+					state.isLoading = false
+					state.isError = true
+					state.message = action.payload || 'Failed to get messages'
+				}
+			)
 			.addCase(deleteMessage.pending, (state) => {
 				state.isLoading = true
 			})
@@ -133,13 +156,17 @@ export const messageSlice = createSlice({
 					(message) => message._id !== action.payload.id
 				)
 			})
-			.addCase(deleteMessage.rejected, (state, action) => {
-				state.isLoading = false
-				state.isError = true
-				state.message = action.payload as string
-			})
+			.addCase(
+				deleteMessage.rejected,
+				(state, action: PayloadAction<string | undefined>) => {
+					state.isLoading = false
+					state.isError = true
+					state.message = action.payload || 'Failed to delete message'
+				}
+			)
 	},
 })
 
-export const { reset } = messageSlice.actions
+export const { reset, messageSent, socketMessageReceived } =
+	messageSlice.actions
 export default messageSlice.reducer

@@ -1,11 +1,12 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { createAppSlice } from '../../app/createAppSlice'
 import { LoginFormDataType } from '../../types/Login'
 import { RegisterFormDataType } from './../../types/Register'
 import authService from './authService'
 import { UserType } from './authTypes'
 
-type InitialStateType = {
+type AuthStateType = {
 	user: UserType | null
 	isError: boolean
 	isSuccess: boolean
@@ -16,7 +17,7 @@ type InitialStateType = {
 const user = localStorage.getItem('user')
 const parsedUser = user ? JSON.parse(user) : null
 
-const initialState: InitialStateType = {
+const initialState: AuthStateType = {
 	user: parsedUser,
 	isError: false,
 	isSuccess: false,
@@ -62,11 +63,11 @@ export const login = createAsyncThunk<
 	}
 })
 
-export const logout = createAsyncThunk('auth/logout', async () => {
-	return await authService.logout()
+export const logout = createAsyncThunk('auth/logout', () => {
+	return authService.logout()
 })
 
-export const authSlice = createSlice({
+export const authSlice = createAppSlice({
 	name: 'auth',
 	initialState,
 	reducers: {

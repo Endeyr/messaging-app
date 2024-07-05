@@ -43,7 +43,7 @@ let activeUserSessions: SessionType[] = []
 
 io.on('connection', (socket) => {
 	const { id } = socket
-	console.log(`User Connected to Socket: ${socket.id}`)
+	console.log(`User Connected to Socket: ${id}`)
 
 	socket.on('new user', (user: UserType) => {
 		if (

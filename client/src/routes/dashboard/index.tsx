@@ -1,3 +1,11 @@
+import {
+	Box,
+	Grid,
+	List,
+	ListItem,
+	ListItemText,
+	Typography,
+} from '@mui/material'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
@@ -33,23 +41,86 @@ const DashboardPage = () => {
 	}
 
 	return (
-		<>
-			<section>
-				<h1>{user && user.username}</h1>
-				<p>Messages Dashboard</p>
-			</section>
-			<Socket />
-			<Messenger />
-			{isError && message && <div style={{ color: 'red' }}>{message}</div>}
-			{messages &&
-				messages.map((msg: MessageType) => {
-					return (
-						<div key={msg._id}>
-							<Message msg={msg} />
-						</div>
-					)
-				})}
-		</>
+		<Grid container spacing={2} sx={{ marginTop: '8px' }}>
+			<Grid item xs={4} height="90dvh">
+				<Box display="flex" flexDirection="column" alignItems="center" gap={4}>
+					<Box component="header" sx={{ fontSize: '1.2rem' }}>
+						Rooms
+					</Box>
+					<List sx={{ width: '100%', maxWidth: 360 }}>
+						<ListItem alignItems="flex-start">
+							<ListItemText primary="Room Number" />
+						</ListItem>
+						<ListItem alignItems="flex-start">
+							<ListItemText primary="Room Number" />
+						</ListItem>
+						<ListItem alignItems="flex-start">
+							<ListItemText primary="Room Number" />
+						</ListItem>
+					</List>
+				</Box>
+			</Grid>
+			<Grid item xs={8} height="90dvh">
+				<Box display="flex" flexDirection="column" alignItems="center" gap={4}>
+					<Box component="header" sx={{ fontSize: '1.2rem' }}>
+						Messages
+					</Box>
+					<List sx={{ width: '100%', maxWidth: 360 }}>
+						<ListItem alignItems="flex-start">
+							<ListItemText
+								primary="Title"
+								secondary={
+									<>
+										<Typography
+											component="span"
+											variant="body2"
+											sx={{ display: 'inline' }}
+										>
+											Username
+										</Typography>
+										{' - message here!!!'}
+									</>
+								}
+							/>
+						</ListItem>
+						<ListItem alignItems="flex-start">
+							<ListItemText
+								primary="Title"
+								secondary={
+									<>
+										<Typography
+											component="span"
+											variant="body2"
+											sx={{ display: 'inline' }}
+										>
+											Username
+										</Typography>
+										{' - message here!!!'}
+									</>
+								}
+							/>
+						</ListItem>
+						<ListItem alignItems="flex-start">
+							<ListItemText
+								primary="Title"
+								secondary={
+									<>
+										<Typography
+											component="span"
+											variant="body2"
+											sx={{ display: 'inline' }}
+										>
+											Username
+										</Typography>
+										{' - message here!!!'}
+									</>
+								}
+							/>
+						</ListItem>
+					</List>
+				</Box>
+			</Grid>
+		</Grid>
 	)
 }
 export default DashboardPage

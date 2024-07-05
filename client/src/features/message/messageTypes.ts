@@ -11,7 +11,7 @@ export type MessageDeleteType = {
 	message: string
 }
 
-export type initialStateType = {
+export type MessageStateType = {
 	messages: MessageType[]
 	isError: boolean
 	isSuccess: boolean

@@ -1,4 +1,5 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAppSlice } from '../../app/createAppSlice'
 import { UserType } from '../auth/authTypes'
 import socketService from './socketService'
 import { SocketStateType, joinRoomType } from './socketTypes'
@@ -38,7 +39,7 @@ export const leaveRoom = createAsyncThunk<
 	return room
 })
 
-const socketSlice = createSlice({
+export const socketSlice = createAppSlice({
 	name: 'socket',
 	initialState,
 	reducers: {
