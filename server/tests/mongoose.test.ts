@@ -2,6 +2,7 @@ import { ObjectId } from 'bson'
 import dotenv from 'dotenv'
 import { Db, MongoClient } from 'mongodb'
 import { IMessage } from '../model/messages'
+import { IRoom } from '../model/room'
 import { IUser } from '../model/user'
 import { RoleEnum } from './../types/types'
 
@@ -60,5 +61,19 @@ describe('insert', () => {
 			sent_from: mockUser,
 		})
 		expect(insertedMessage).toEqual(mockMessage)
+	})
+
+	it('should insert a room into collection', async () => {
+		const rooms = db.collection('Room')
+
+		const mockRoom: IRoom = {
+			users: ['Aaron', 'Adam', 'John'],
+		}
+
+		await rooms.insertOne(mockRoom)
+		const insertedRoom = await rooms.findOne({
+			users: ['Aaron', 'Adam', 'John'],
+		})
+		expect(insertedRoom).toEqual(mockRoom)
 	})
 })
