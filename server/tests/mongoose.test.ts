@@ -22,6 +22,8 @@ describe('insert', () => {
 
 	beforeEach(async () => {
 		await db.collection('User').deleteMany()
+		await db.collection('Message').deleteMany()
+		await db.collection('Room').deleteMany()
 	})
 
 	it('should insert a doc into collection', async () => {

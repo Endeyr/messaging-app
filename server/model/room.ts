@@ -1,8 +1,9 @@
-import mongoose, { Document } from 'mongoose'
+import { ObjectId } from 'bson'
+import mongoose from 'mongoose'
 const { Schema, model } = mongoose
 
-export interface IRoom extends Document {
-	id?: string
+export interface IRoom {
+	id?: ObjectId
 	users: string[]
 	createdAt?: Date
 	updatedAt?: Date

@@ -1,8 +1,9 @@
-import mongoose, { Document } from 'mongoose'
+import { ObjectId } from 'bson'
+import mongoose from 'mongoose'
 const { Schema, model } = mongoose
 
-export interface IMessage extends Document {
-	id?: string
+export interface IMessage {
+	id?: ObjectId
 	sent_from: mongoose.Types.ObjectId
 	sent_to?: mongoose.Types.ObjectId
 	room?: mongoose.Types.ObjectId
