@@ -40,6 +40,7 @@ export const sendMessage = async (
 		if (!req.user) {
 			return res.status(401).json({ message: 'User not found' })
 		} else {
+			// TODO update Message based on model
 			const message = await Message.create({
 				text: req.body.text,
 				user: req.user.id,

@@ -8,7 +8,7 @@ import {
 	loginUser,
 	registerUser,
 	updateUser,
-} from './userController'
+} from '../controllers/userController'
 
 const userRouter = express.Router()
 

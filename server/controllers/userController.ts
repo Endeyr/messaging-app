@@ -158,7 +158,7 @@ export const updateUser = async (
 			return res.status(400).json({ message: 'User not found' })
 		}
 		if (
-			req.user?.id !== userToUpdate.id &&
+			req.user?._id !== userToUpdate.id &&
 			!req.user?.role.includes(RoleEnum.admin)
 		) {
 			return res
@@ -192,8 +192,8 @@ export const accessUserData = async (
 		if (!req.user) {
 			return res.status(404).json({ message: 'User not found' })
 		}
-		const { username, email, id, role } = req.user
-		return res.status(200).json({ userId: id, username, email, role })
+		const { username, email, _id, role } = req.user
+		return res.status(200).json({ userId: _id, username, email, role })
 	} catch (error) {
 		return next(error)
 	}

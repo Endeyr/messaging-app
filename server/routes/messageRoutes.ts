@@ -1,6 +1,10 @@
 import express from 'express'
 import { protect } from '../middleware/authMiddleware'
-import { deleteMessage, getMessages, sendMessage } from './messageController'
+import {
+	deleteMessage,
+	getMessages,
+	sendMessage,
+} from '../controllers/messageController'
 
 const messageRouter = express.Router()
 

@@ -1,6 +1,17 @@
+import { ObjectId } from 'bson'
 import mongoose from 'mongoose'
-import { IUser, RoleEnum } from '../types/types'
+import { RoleEnum } from '../types/types'
 const { Schema, model } = mongoose
+
+export interface IUser {
+	_id?: ObjectId
+	username: string
+	email: string
+	password: string
+	role: RoleEnum[]
+	createdAt?: Date
+	updatedAt?: Date
+}
 
 const userSchema = new Schema(
 	{

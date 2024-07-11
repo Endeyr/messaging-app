@@ -1,5 +1,5 @@
 import { Request } from 'express'
-import { Document } from 'mongoose'
+import { IUser } from '../model/user'
 
 export type UserType = {
 	username: string
@@ -13,13 +13,6 @@ export type MessageType = {
 }
 export type UserAuthRequest = Request & {
 	user?: IUser | null
-}
-export interface IUser extends Document {
-	id?: string
-	username: string
-	email: string
-	password: string
-	role: RoleEnum[]
 }
 
 export enum RoleEnum {

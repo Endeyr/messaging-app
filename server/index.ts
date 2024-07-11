@@ -45,6 +45,10 @@ io.on('connection', (socket) => {
 	const { id } = socket
 	console.log(`User Connected to Socket: ${id}`)
 
+	socket.on('message', (msg) => {
+		io.emit('message', msg)
+	})
+
 	socket.on('new user', (user: UserType) => {
 		if (
 			!users.some((existingUser) => existingUser.username === user.username)
@@ -118,3 +122,5 @@ mongoose
 				})
 			})
 	})
+
+export default app
