@@ -8,7 +8,7 @@ import { RoleEnum } from './../types/types'
 
 dotenv.config()
 
-describe('insert', () => {
+describe('insert into mongodb', () => {
 	let connection: MongoClient
 	let db: Db
 
