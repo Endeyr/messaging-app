@@ -4,9 +4,9 @@ const { Schema, model } = mongoose
 
 export interface IMessage {
 	id?: ObjectId
-	sent_from: mongoose.Types.ObjectId
-	sent_to?: mongoose.Types.ObjectId
-	room?: mongoose.Types.ObjectId
+	sent_from: ObjectId
+	sent_to?: ObjectId
+	room?: ObjectId
 	text: string
 	media_url?: string
 	createdAt?: Date
@@ -15,7 +15,6 @@ export interface IMessage {
 
 const messageSchema = new Schema(
 	{
-		// _id
 		sent_from: {
 			type: Schema.Types.ObjectId,
 			required: true,

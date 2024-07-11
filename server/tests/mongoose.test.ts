@@ -1,5 +1,7 @@
+import { ObjectId } from 'bson'
 import dotenv from 'dotenv'
 import { Db, MongoClient } from 'mongodb'
+import { IMessage } from '../model/messages'
 import { IUser } from '../model/user'
 import { RoleEnum } from './../types/types'
 
@@ -26,7 +28,7 @@ describe('insert', () => {
 		await db.collection('Room').deleteMany()
 	})
 
-	it('should insert a doc into collection', async () => {
+	it('should insert a user into collection', async () => {
 		const users = db.collection('User')
 
 		const mockUser: IUser = {
@@ -39,5 +41,24 @@ describe('insert', () => {
 
 		const insertedUser = await users.findOne({ username: 'John' })
 		expect(insertedUser).toEqual(mockUser)
+	})
+
+	it('should insert a message into collection', async () => {
+		const messages = db.collection('Message')
+
+		const mockUser = new ObjectId()
+
+		const mockMessage: IMessage = {
+			sent_from: mockUser,
+			sent_to: new ObjectId(),
+			room: new ObjectId(),
+			text: 'A test message',
+			media_url: 'some_image.jpg',
+		}
+		await messages.insertOne(mockMessage)
+		const insertedMessage = await messages.findOne({
+			sent_from: mockUser,
+		})
+		expect(insertedMessage).toEqual(mockMessage)
 	})
 })
