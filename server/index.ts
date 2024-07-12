@@ -7,10 +7,10 @@ import http from 'http'
 import mongoose from 'mongoose'
 import path from 'path'
 import * as socketio from 'socket.io'
-import { CLIENT_HOST, PORT } from './config'
 import messageRouter from './routes/messageRoutes'
 import userRouter from './routes/userRoutes'
 import { MessageType, SessionType, UserType } from './types/types'
+import { CLIENT_HOST, PORT } from './utils/config'
 import { getUniqueUsersOnlineByUsername } from './utils/utils'
 
 dotenv.config()
