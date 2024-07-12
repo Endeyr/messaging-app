@@ -1,34 +1,10 @@
-import dotenv from 'dotenv'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
-import { describe } from 'node:test'
 import messageModel from '../model/messages'
 import roomModel from '../model/room'
 import userModel from '../model/user'
 import { RoleEnum } from './../types/types'
 
-dotenv.config()
-
-let mongoServer: MongoMemoryServer
-
-beforeAll(async () => {
-	mongoServer = await MongoMemoryServer.create()
-	const mongoUri = mongoServer.getUri()
-	await mongoose.connect(mongoUri)
-})
-
-afterAll(async () => {
-	await mongoose.disconnect()
-	await mongoServer.stop()
-})
-
 describe('Mongoose Model Operations', () => {
-	beforeEach(async () => {
-		await userModel.deleteMany({})
-		await messageModel.deleteMany({})
-		await roomModel.deleteMany({})
-	})
-
 	describe('User Operations', () => {
 		it('should insert a user into collection', async () => {
 			const mockUser = new userModel({
