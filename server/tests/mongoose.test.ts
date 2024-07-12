@@ -1,79 +1,110 @@
-import { ObjectId } from 'bson'
 import dotenv from 'dotenv'
-import { Db, MongoClient } from 'mongodb'
-import { IMessage } from '../model/messages'
-import { IRoom } from '../model/room'
-import { IUser } from '../model/user'
+import { MongoMemoryServer } from 'mongodb-memory-server'
+import mongoose from 'mongoose'
+import { describe } from 'node:test'
+import messageModel from '../model/messages'
+import roomModel from '../model/room'
+import userModel from '../model/user'
 import { RoleEnum } from './../types/types'
 
 dotenv.config()
 
-describe('insert into mongodb', () => {
-	let connection: MongoClient
-	let db: Db
+let mongoServer: MongoMemoryServer
 
-	beforeAll(async () => {
-		connection = await MongoClient.connect(
-			`mongodb+srv://${process.env.mongodbUsername}:${process.env.mongodbPassword}@messagingapp.fc5kqwd.mongodb.net/?retryWrites=true&w=majority&appName=MessagingApp`
-		)
-		db = connection.db()
-	})
+beforeAll(async () => {
+	mongoServer = await MongoMemoryServer.create()
+	const mongoUri = mongoServer.getUri()
+	await mongoose.connect(mongoUri)
+})
 
-	afterAll(async () => {
-		await connection.close()
-	})
+afterAll(async () => {
+	await mongoose.disconnect()
+	await mongoServer.stop()
+})
 
+describe('Mongoose Model Operations', () => {
 	beforeEach(async () => {
-		await db.collection('User').deleteMany()
-		await db.collection('Message').deleteMany()
-		await db.collection('Room').deleteMany()
+		await userModel.deleteMany({})
+		await messageModel.deleteMany({})
+		await roomModel.deleteMany({})
 	})
 
-	it('should insert a user into collection', async () => {
-		const users = db.collection('User')
+	describe('User Operations', () => {
+		it('should insert a user into collection', async () => {
+			const mockUser = new userModel({
+				username: 'John',
+				email: 'test@email.com',
+				password: 'password',
+				role: [RoleEnum.user],
+			})
+			const savedUser = await mockUser.save()
 
-		const mockUser: IUser = {
-			username: 'John',
-			email: 'test@email.com',
-			password: 'password',
-			role: [RoleEnum.user],
-		}
-		await users.insertOne(mockUser)
-
-		const insertedUser = await users.findOne({ username: 'John' })
-		expect(insertedUser).toEqual(mockUser)
-	})
-
-	it('should insert a message into collection', async () => {
-		const messages = db.collection('Message')
-
-		const mockUser = new ObjectId()
-
-		const mockMessage: IMessage = {
-			sent_from: mockUser,
-			sent_to: new ObjectId(),
-			room: new ObjectId(),
-			text: 'A test message',
-			media_url: 'some_image.jpg',
-		}
-		await messages.insertOne(mockMessage)
-		const insertedMessage = await messages.findOne({
-			sent_from: mockUser,
+			expect(savedUser.username).toBe('John')
+			expect(savedUser.email).toBe('test@email.com')
 		})
-		expect(insertedMessage).toEqual(mockMessage)
+
+		it('should not insert a user with duplicate email', async () => {
+			const mockUser = new userModel({
+				username: 'John',
+				email: 'test@email.com',
+				password: 'password',
+				role: [RoleEnum.user],
+			})
+			await mockUser.save()
+
+			const duplicateUser = new userModel({
+				username: 'Jane',
+				email: 'test@email.com',
+				password: 'password123',
+				role: [RoleEnum.user],
+			})
+
+			await expect(duplicateUser.save()).rejects.toThrow()
+		})
 	})
 
-	it('should insert a room into collection', async () => {
-		const rooms = db.collection('Room')
+	describe('Message Operations', () => {
+		it('should insert a message into collection', async () => {
+			const user = await userModel.create({
+				username: 'John',
+				email: 'john@example.com',
+				password: 'password',
+				role: [RoleEnum.user],
+			})
 
-		const mockRoom: IRoom = {
-			users: ['Aaron', 'Adam', 'John'],
-		}
+			const mockMessage = new messageModel({
+				sent_from: user._id,
+				text: 'A test message',
+			})
 
-		await rooms.insertOne(mockRoom)
-		const insertedRoom = await rooms.findOne({
-			users: ['Aaron', 'Adam', 'John'],
+			const savedMessage = await mockMessage.save()
+			expect(savedMessage.text).toBe('A test message')
+			expect(savedMessage.sent_from).toEqual(user._id)
 		})
-		expect(insertedRoom).toEqual(mockRoom)
+
+		it('should not insert a message without required fields', async () => {
+			const invalidMessage = new messageModel({
+				sent_to: new mongoose.Types.ObjectId(),
+			})
+
+			await expect(invalidMessage.save()).rejects.toThrow()
+		})
+	})
+
+	describe('Room Operations', () => {
+		it('should insert a room into collection', async () => {
+			const mockRoom = new roomModel({
+				users: ['Aaron', 'Adam', 'John'],
+			})
+
+			const savedRoom = await mockRoom.save()
+			expect(savedRoom.users).toEqual(['Aaron', 'Adam', 'John'])
+		})
+
+		it('should not insert a room without users', async () => {
+			const invalidRoom = new roomModel({})
+
+			await expect(invalidRoom.save()).rejects.toThrow()
+		})
 	})
 })
