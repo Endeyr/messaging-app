@@ -1,5 +1,5 @@
 import { Request } from 'express'
-import { IUser } from '../model/user'
+import { IUserDocument } from './../model/user'
 
 export type UserType = {
 	username: string
@@ -12,7 +12,7 @@ export type MessageType = {
 	timestamp: string
 }
 export type UserAuthRequest = Request & {
-	user?: IUser | null
+	user?: IUserDocument | null
 }
 
 export enum RoleEnum {
