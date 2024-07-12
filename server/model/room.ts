@@ -1,20 +1,26 @@
-import { ObjectId } from 'bson'
-import mongoose from 'mongoose'
+import mongoose, { Document } from 'mongoose'
 const { Schema, model } = mongoose
 
 export interface IRoom {
-	id?: ObjectId
 	users: string[]
+}
+
+export interface IRoomDocument extends IRoom, Document {
 	createdAt?: Date
 	updatedAt?: Date
 }
 
 const roomSchema = new Schema(
 	{
-		// _id
 		users: {
 			type: [String],
 			required: true,
+			validate: {
+				validator: function (v: string[]) {
+					return v.length > 0
+				},
+				message: 'A room must have at least one user.',
+			},
 		},
 	},
 	{
@@ -22,5 +28,5 @@ const roomSchema = new Schema(
 	}
 )
 
-const Room = model<IRoom>('Room', roomSchema)
-export default Room
+const roomModel = model<IRoomDocument>('Room', roomSchema)
+export default roomModel

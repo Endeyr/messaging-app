@@ -1,19 +1,21 @@
 import { ObjectId } from 'bson'
-import mongoose from 'mongoose'
+import mongoose, { Document } from 'mongoose'
 const { Schema, model } = mongoose
 
 export interface IMessage {
-	id?: ObjectId
 	sent_from: ObjectId
 	sent_to?: ObjectId
 	room?: ObjectId
 	text: string
 	media_url?: string
+}
+
+export interface IMessageDocument extends IMessage, Document {
 	createdAt?: Date
 	updatedAt?: Date
 }
 
-const messageSchema = new Schema(
+const messageSchema = new Schema<IMessageDocument>(
 	{
 		sent_from: {
 			type: Schema.Types.ObjectId,
@@ -41,5 +43,5 @@ const messageSchema = new Schema(
 	}
 )
 
-const Message = model<IMessage>('Message', messageSchema)
-export default Message
+const messageModel = model<IMessageDocument>('Message', messageSchema)
+export default messageModel

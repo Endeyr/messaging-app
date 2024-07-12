@@ -1,19 +1,20 @@
-import { ObjectId } from 'bson'
-import mongoose from 'mongoose'
+import mongoose, { Document } from 'mongoose'
 import { RoleEnum } from '../types/types'
 const { Schema, model } = mongoose
 
 export interface IUser {
-	_id?: ObjectId
 	username: string
 	email: string
 	password: string
 	role: RoleEnum[]
+}
+
+export interface IUserDocument extends IUser, Document {
 	createdAt?: Date
 	updatedAt?: Date
 }
 
-const userSchema = new Schema(
+const userSchema = new Schema<IUserDocument>(
 	{
 		username: {
 			type: String,
@@ -41,5 +42,5 @@ const userSchema = new Schema(
 	}
 )
 
-const User = model<IUser>('User', userSchema)
-export default User
+const userModel = model<IUserDocument>('User', userSchema)
+export default userModel
