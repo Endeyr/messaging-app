@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express'
-import Message from '../model/messages'
-import User from '../model/user'
+import messageModel from '../model/messages'
+import userModel from '../model/user'
 import { RoleEnum, UserAuthRequest } from '../types/types'
 
 // @desc Get all messages for a user
@@ -16,7 +16,7 @@ export const getMessages = async (
 		if (!req.user) {
 			return res.json({ message: 'User not found' })
 		} else {
-			messages = await Message.find({ user: req.user.id })
+			messages = await messageModel.find({ user: req.user.id })
 			return res.json({ messages })
 		}
 	} catch (error) {
@@ -41,7 +41,7 @@ export const sendMessage = async (
 			return res.status(401).json({ message: 'User not found' })
 		} else {
 			// TODO update Message based on model
-			const message = await Message.create({
+			const message = await messageModel.create({
 				text: req.body.text,
 				user: req.user.id,
 			})
@@ -65,14 +65,14 @@ export const deleteMessage = async (
 		if (!req.params.id) {
 			return res.status(400).json({ message: 'No id provided' })
 		}
-		const message = await Message.findById(req.params.id)
+		const message = await messageModel.findById(req.params.id)
 		if (!message) {
 			return res.status(400).json({ message: 'Message not found' })
 		}
 		if (!req.user?.id) {
 			return res.status(401).json({ message: 'User not logged in' })
 		}
-		const user = await User.findById(req.user?.id)
+		const user = await userModel.findById(req.user?.id)
 		if (!user) {
 			return res.status(401).json({ message: 'User not found' })
 		}

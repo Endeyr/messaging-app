@@ -1,27 +1,27 @@
 import bcrypt from 'bcryptjs'
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import User from '../model/user'
+import userModel, { IUser } from '../model/user'
 import { RoleEnum, UserAuthRequest } from '../types/types'
+import { IUserDocument } from './../model/user'
 
 // @desc Register new user
 // @route POST /api/user/register
 // @access Public
-// TODO fix user role, currently an array in an array [['user']]
 export const registerUser = async (
 	req: Request,
 	res: Response,
 	next: NextFunction
 ) => {
-	const { username, email, password, role } = req.body
-	const existingUser = await User.findOne({ email })
+	const { username, email, password, role } = req.body as IUser
+	const existingUser = await userModel.findOne({ email })
 	if (existingUser) {
 		const error = new Error('User already registered')
 		return res.status(400).send(error.message)
 	}
 	const salt = await bcrypt.genSalt(10)
 	const hashedPassword = await bcrypt.hash(password, salt)
-	const newUser = new User({
+	const newUser: IUserDocument = new userModel({
 		username,
 		email,
 		password: hashedPassword,
@@ -33,7 +33,7 @@ export const registerUser = async (
 		const error = err as Error
 		return res.status(400).send(error.message)
 	}
-	let token
+	let token: string
 	try {
 		token = jwt.sign(
 			{
@@ -70,7 +70,7 @@ export const loginUser = async (
 	const { email, password } = req.body
 	let existingUser
 	try {
-		existingUser = await User.findOne({ email })
+		existingUser = await userModel.findOne({ email })
 	} catch (err) {
 		const error = err as Error
 		return res.status(400).send(error.message)
@@ -122,7 +122,7 @@ export const deleteUser = async (
 		if (!req.params.id) {
 			return res.status(400).json({ message: 'No id provided' })
 		}
-		const userToDelete = await User.findById(req.params.id)
+		const userToDelete = await userModel.findById(req.params.id)
 		if (!userToDelete) {
 			return res.status(400).json({ message: 'User not found' })
 		}
@@ -153,7 +153,7 @@ export const updateUser = async (
 		if (!req.params.id) {
 			return res.status(400).json({ message: 'No id provided' })
 		}
-		const userToUpdate = await User.findById(req.params.id)
+		const userToUpdate = await userModel.findById(req.params.id)
 		if (!userToUpdate) {
 			return res.status(400).json({ message: 'User not found' })
 		}
@@ -168,9 +168,13 @@ export const updateUser = async (
 		if (!req.body || Object.keys(req.body).length === 0) {
 			return res.status(400).json({ message: 'Please add update fields' })
 		}
-		const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-			new: true,
-		})
+		const updatedUser = await userModel.findByIdAndUpdate(
+			req.params.id,
+			req.body,
+			{
+				new: true,
+			}
+		)
 		return res
 			.status(200)
 			.json({ updatedUser, message: 'User updated successfully ' })
