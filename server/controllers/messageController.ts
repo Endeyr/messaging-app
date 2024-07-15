@@ -1,7 +1,8 @@
 import { NextFunction, Response } from 'express'
 import messageModel from '../model/messages'
 import userModel from '../model/user'
-import { RoleEnum, UserAuthRequest } from '../types/types'
+import { UserAuthRequest } from '../types/types'
+import { IMessageDocument } from './../model/messages'
 
 // @desc Get all messages for a user
 // @route GET /api/message
@@ -12,11 +13,22 @@ export const getMessages = async (
 	next: NextFunction
 ) => {
 	try {
-		let messages
+		const messages: IMessageDocument[] = []
 		if (!req.user) {
 			return res.json({ message: 'User not found' })
 		} else {
-			messages = await messageModel.find({ user: req.user.id })
+			const sentFromMessages = await messageModel.find({
+				sent_from: req.user.id,
+			})
+			const sentToMessages = await messageModel.find({ sent_to: req.user.id })
+			messages.push(...sentFromMessages)
+			messages.push(...sentToMessages)
+			messages.sort((a, b) => {
+				if (a.createdAt && b.createdAt) {
+					return a.createdAt.getTime() - b.createdAt.getTime()
+				}
+				return 0
+			})
 			return res.json({ messages })
 		}
 	} catch (error) {
@@ -40,12 +52,12 @@ export const sendMessage = async (
 		if (!req.user) {
 			return res.status(401).json({ message: 'User not found' })
 		} else {
-			// TODO update Message based on model
 			const message = await messageModel.create({
+				sent_from: req.user,
+				sent_to: req.body.sent_to,
 				text: req.body.text,
-				user: req.user.id,
 			})
-			return res.status(200).json(message)
+			return res.status(200).json({ message })
 		}
 	} catch (error) {
 		console.error('Error sending message:', error)

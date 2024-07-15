@@ -9,6 +9,7 @@ import path from 'path'
 import * as socketio from 'socket.io'
 import messageRouter from './routes/messageRoutes'
 import userRouter from './routes/userRoutes'
+import { mockAuthMiddleware } from './tests/mockAuthMiddleware'
 import { MessageType, SessionType, UserType } from './types/types'
 import { CLIENT_HOST, PORT } from './utils/config'
 import { getUniqueUsersOnlineByUsername } from './utils/utils'
@@ -34,6 +35,9 @@ instrument(io, {
 
 app.use(express.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+if (process.env.NODE_ENV === 'test') {
+	app.use(mockAuthMiddleware)
+}
 app.use('/api/user', userRouter)
 app.use('/message', messageRouter)
 

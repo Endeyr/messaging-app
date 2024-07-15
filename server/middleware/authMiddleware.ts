@@ -16,6 +16,7 @@ export const protect = async (
 		token = req.headers.authorization.split(' ')[1]
 	}
 	if (!token) {
+		console.log('token error')
 		return res.status(401).json({ message: 'Not authorized, missing token' })
 	}
 	try {

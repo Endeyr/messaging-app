@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs'
 import { NextFunction, Request, Response } from 'express'
-import jwt from 'jsonwebtoken'
+import { generateToken } from '../helpers/generateToken'
 import userModel, { IUser } from '../model/user'
 import { RoleEnum, UserAuthRequest } from '../types/types'
 import { IUserDocument } from './../model/user'
@@ -35,13 +35,7 @@ export const registerUser = async (
 	}
 	let token: string
 	try {
-		token = jwt.sign(
-			{
-				userId: newUser.id,
-			},
-			process.env.JWT_SECRET as string,
-			{ expiresIn: '30d' }
-		)
+		token = generateToken(newUser)
 	} catch (err) {
 		const error = new Error('Unable to register user')
 		return res.status(401).send(error.message)
@@ -73,28 +67,26 @@ export const loginUser = async (
 		existingUser = await userModel.findOne({ email })
 	} catch (err) {
 		const error = err as Error
+		console.log(error.message)
 		return res.status(400).send(error.message)
 	}
 	if (!existingUser) {
 		const error = new Error('Incorrect email or password')
+		console.log(error.message)
 		return res.status(400).send(error.message)
 	}
 	const isPasswordValid = await bcrypt.compare(password, existingUser.password)
 	if (!isPasswordValid) {
 		const error = new Error('Incorrect email or password')
+		console.log(error.message)
 		return res.status(400).send(error.message)
 	}
 	let token
 	try {
-		token = jwt.sign(
-			{
-				userId: existingUser.id,
-			},
-			process.env.JWT_SECRET as string,
-			{ expiresIn: '30d' }
-		)
+		token = generateToken(existingUser)
 	} catch (err) {
 		const error = new Error('Error generating token')
+		console.log(error.message)
 		return res.status(500).send(error.message)
 	}
 	return res.status(200).json({
@@ -127,6 +119,7 @@ export const deleteUser = async (
 			return res.status(400).json({ message: 'User not found' })
 		}
 		if (!req.user?.role.includes(RoleEnum.admin)) {
+			console.log('auth error')
 			return res
 				.status(401)
 				.json({ message: 'User not authorized to delete user' })
@@ -134,7 +127,7 @@ export const deleteUser = async (
 		await userToDelete.deleteOne()
 		return res
 			.status(200)
-			.json({ id: req.params.id, message: 'User deleted successfully ' })
+			.json({ id: req.params.id, message: 'User deleted successfully' })
 	} catch (error) {
 		console.error('Error deleting user:', error)
 		return res.status(500).json({ message: 'Server error' })
@@ -155,10 +148,14 @@ export const updateUser = async (
 		}
 		const userToUpdate = await userModel.findById(req.params.id)
 		if (!userToUpdate) {
-			return res.status(400).json({ message: 'User not found' })
+			return res.status(400).json({ message: 'User not found in db' })
 		}
+		if (!req.user) {
+			return res.status(400).json({ message: 'User not found in req' })
+		}
+		const userId = req.user._id as string
 		if (
-			req.user?._id !== userToUpdate.id &&
+			userId.toString() !== userToUpdate.id &&
 			!req.user?.role.includes(RoleEnum.admin)
 		) {
 			return res
@@ -177,7 +174,7 @@ export const updateUser = async (
 		)
 		return res
 			.status(200)
-			.json({ updatedUser, message: 'User updated successfully ' })
+			.json({ updatedUser, message: 'User updated successfully' })
 	} catch (error) {
 		console.error('Error updating user:', error)
 		return res.status(500).json({ message: 'Server error' })
