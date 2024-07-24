@@ -10,6 +10,12 @@ import * as socketio from 'socket.io'
 import messageRouter from './routes/messageRoutes'
 import userRouter from './routes/userRoutes'
 import { mockAuthMiddleware } from './tests/mockAuthMiddleware'
+import {
+	ClientToServerEventsType,
+	InterServerEventsType,
+	ServerToClientEventsType,
+	SocketDataType,
+} from './types/socket-io'
 import { MessageType, SessionType, UserType } from './types/types'
 import { CLIENT_HOST, PORT } from './utils/config'
 import { getUniqueUsersOnlineByUsername } from './utils/utils'
@@ -21,7 +27,12 @@ app.use(cors())
 
 const server: http.Server = http.createServer(app)
 
-const io: socketio.Server = new socketio.Server(server, {
+const io: socketio.Server = new socketio.Server<
+	ClientToServerEventsType,
+	ServerToClientEventsType,
+	InterServerEventsType,
+	SocketDataType
+>(server, {
 	cors: {
 		origin: CLIENT_HOST,
 		methods: ['GET', 'POST'],
@@ -41,69 +52,96 @@ if (process.env.NODE_ENV === 'test') {
 app.use('/api/user', userRouter)
 app.use('/message', messageRouter)
 
-let users: UserType[] = []
-const messages: MessageType[] = []
-let activeUserSessions: SessionType[] = []
+// let users: UserType[] = []
+// const messages: MessageType[] = []
+// let activeUserSessions: SessionType[] = []
 
 io.on('connection', (socket) => {
 	const { id } = socket
 	console.log(`User Connected to Socket: ${id}`)
 
-	socket.on('message', (msg) => {
-		io.emit('message', msg)
+	// DOCS TUTORIAL
+	socket.emit('noArg')
+	socket.emit('basicEmit', 1, '2', Buffer.from([3]))
+	socket.emit('withAck', '4', (e: number) => {
+		// e is inferred as number
 	})
 
-	socket.on('new user', (user: UserType) => {
-		if (
-			!users.some((existingUser) => existingUser.username === user.username)
-		) {
-			users = [...users, user]
-			io.emit('new user added', user)
-		}
-		socket.data.username = user.username
-		activeUserSessions.push({
-			session: id,
-			username: user.username,
-		})
+	// works when broadcast to all
+	io.emit('noArg')
 
-		io.emit('users online', getUniqueUsersOnlineByUsername(activeUserSessions))
+	// works when broadcasting to a room
+	io.to('room1').emit('basicEmit', 1, '2', Buffer.from([3]))
+
+	socket.on('hello', () => {
+		// ...
 	})
 
-	socket.on('join room', (room, username) => {
-		console.log(`User ${username} joined room ${room}`)
-		socket.join(room)
-		socket.emit('user joined room', `User ${username} joined room ${room}`)
+	io.serverSideEmit('ping')
+
+	io.on('ping', () => {
+		// ...
 	})
 
-	socket.on('leave room', (room, username) => {
-		console.log(`User ${username} left ${room}`)
-		socket.leave(room)
-		socket.emit('user left room', `User ${username} left ${room}`)
-	})
+	socket.data.name = 'john'
+	socket.data.age = 42
 
-	socket.on('send message', (message: MessageType) => {
-		console.log(`message: ${message.author}: ${message.content}`)
-		messages.push(message)
-		socket.emit('receive message', message)
-	})
+	// SOCKET IO OLD
+	// socket.on('message', (msg) => {
+	// 	io.emit('message', msg)
+	// })
 
-	socket.on('typing', (username: string) => {
-		console.log(`User typing: ${username}`)
-		io.emit('user starts typing', username)
-	})
+	// socket.on('newUser', (user: UserType) => {
+	// 	if (
+	// 		!users.some((existingUser) => existingUser.username === user.username)
+	// 	) {
+	// 		users = [...users, user]
+	// 		io.emit('newUserAdded', user)
+	// 	}
+	// 	socket.data.username = user.username
+	// 	activeUserSessions.push({
+	// 		session: id,
+	// 		username: user.username,
+	// 	})
 
-	socket.on('stopped typing', (username: string) => {
-		console.log(`User stopped typing: ${username}`)
-		io.emit('user stopped typing', username)
-	})
+	// 	io.emit('users online', getUniqueUsersOnlineByUsername(activeUserSessions))
+	// })
 
-	socket.on('disconnect', () => {
-		console.log(`user disconnected: ${socket.data.username}`)
-		activeUserSessions = activeUserSessions.filter(
-			(user) => !(user.username === socket.data.username && user.session === id)
-		)
-		io.emit('users online', getUniqueUsersOnlineByUsername(activeUserSessions))
-	})
+	// socket.on('join room', (room, username) => {
+	// 	console.log(`User ${username} joined room ${room}`)
+	// 	socket.join(room)
+	// 	socket.emit('user joined room', `User ${username} joined room ${room}`)
+	// })
+
+	// socket.on('leave room', (room, username) => {
+	// 	console.log(`User ${username} left ${room}`)
+	// 	socket.leave(room)
+	// 	socket.emit('user left room', `User ${username} left ${room}`)
+	// })
+
+	// socket.on('send message', (message: MessageType) => {
+	// 	console.log(`message: ${message.author}: ${message.content}`)
+	// 	messages.push(message)
+	// 	socket.emit('receive message', message)
+	// })
+
+	// socket.on('typing', (username: string) => {
+	// 	console.log(`User typing: ${username}`)
+	// 	io.emit('user starts typing', username)
+	// })
+
+	// socket.on('stopped typing', (username: string) => {
+	// 	console.log(`User stopped typing: ${username}`)
+	// 	io.emit('user stopped typing', username)
+	// })
+
+	// socket.on('disconnect', () => {
+	// 	console.log(`user disconnected: ${socket.data.username}`)
+	// 	activeUserSessions = activeUserSessions.filter(
+	// 		(user) => !(user.username === socket.data.username && user.session === id)
+	// 	)
+	// 	io.emit('users online', getUniqueUsersOnlineByUsername(activeUserSessions))
+	// })
 })
 
 mongoose
