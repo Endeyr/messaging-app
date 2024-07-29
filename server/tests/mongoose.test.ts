@@ -3,6 +3,7 @@ import messageModel from '../model/messages'
 import roomModel from '../model/room'
 import userModel from '../model/user'
 import { RoleEnum } from './../types/types'
+import { describe } from 'node:test'
 
 describe('Mongoose Model Operations', () => {
 	describe('User Operations', () => {
@@ -22,7 +23,7 @@ describe('Mongoose Model Operations', () => {
 		it('should not insert a user with duplicate email', async () => {
 			const mockUser = new userModel({
 				username: 'John',
-				email: 'test@email.com',
+				email: 'dup@email.com',
 				password: 'password',
 				role: [RoleEnum.user],
 			})
@@ -30,7 +31,7 @@ describe('Mongoose Model Operations', () => {
 
 			const duplicateUser = new userModel({
 				username: 'Jane',
-				email: 'test@email.com',
+				email: 'dup@email.com',
 				password: 'password123',
 				role: [RoleEnum.user],
 			})

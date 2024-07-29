@@ -13,12 +13,15 @@ dotenv.config()
 let mongoServer: MongoMemoryServer
 export let mockUser: IUserDocument
 export let mockUser2: IUserDocument
+export let mockUser3: IUserDocument
 export let mockAdmin: IUserDocument
 export let authToken: string
 export let userToken: string
 export let user2Token: string
+export let user3Token: string
 export let mockMessage1: IMessageDocument
 export let mockMessage2: IMessageDocument
+let isSetup = false
 
 beforeAll(async () => {
 	try {
@@ -54,9 +57,17 @@ beforeAll(async () => {
 		})
 		await mockUser2.save()
 
+		mockUser3 = new userModel({
+			username: 'mockUser3',
+			email: 'mockUser3@example.com',
+			password: hashedPassword,
+			role: [RoleEnum.user],
+		})
+
 		authToken = generateToken(mockAdmin)
 		userToken = generateToken(mockUser)
 		user2Token = generateToken(mockUser2)
+		user3Token = generateToken(mockUser3)
 
 		mockMessage1 = new messageModel({
 			sent_from: mockUser,
@@ -71,13 +82,18 @@ beforeAll(async () => {
 			text: 'Here is a second message',
 		})
 		await mockMessage2.save()
+		isSetup = true
 	} catch (error) {
 		console.error('Error in beforeAll setup:', error)
 		process.exit(1)
 	}
-})
+}, 20000)
 
 afterAll(async () => {
+	if (!isSetup) {
+		console.error('Error in setup', isSetup)
+		process.exit(1)
+	}
 	try {
 		await userModel.deleteMany({})
 		await messageModel.deleteMany({})
