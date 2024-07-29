@@ -9,6 +9,8 @@ import path from 'path'
 import * as socketio from 'socket.io'
 import messageRouter from './routes/messageRoutes'
 import userRouter from './routes/userRoutes'
+import { messageHandler } from './socket_handlers/messageHandler'
+import { userHandler } from './socket_handlers/userHandler'
 import { mockAuthMiddleware } from './tests/mockAuthMiddleware'
 import {
 	ClientToServerEventsType,
@@ -50,9 +52,15 @@ if (process.env.NODE_ENV === 'test') {
 app.use('/api/user', userRouter)
 app.use('/message', messageRouter)
 
+const onConnection = (socket: socketio.Socket) => {
+	userHandler(io, socket)
+	messageHandler(io, socket)
+}
+
 io.on('connection', (socket) => {
 	const { id } = socket
 	console.log(`User Connected to Socket: ${id}`)
+	onConnection(socket)
 })
 
 mongoose
