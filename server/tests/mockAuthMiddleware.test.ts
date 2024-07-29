@@ -3,6 +3,16 @@ import app from '..'
 import { authToken, user3Token } from './setupFile'
 
 describe('Auth Operations', () => {
+	const consoleError = console.error
+
+	beforeAll(() => {
+		console.error = jest.fn()
+	})
+
+	afterAll(() => {
+		console.error = consoleError
+	})
+
 	it('should not allow invalid token', async () => {
 		const fakeToken = 'fkjdfldsajfkldsa'
 		const response = await supertest(app)
@@ -37,6 +47,8 @@ describe('Auth Operations', () => {
 
 		expect(response.status).toBe(500)
 		expect(response.body.message).toBe('Server error')
+
+		expect(console.error).toHaveBeenCalled()
 
 		verifyTokenSpy.mockRestore()
 	})
