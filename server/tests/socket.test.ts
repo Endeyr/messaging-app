@@ -15,64 +15,55 @@ export type ClientToServerEvents = {}
 // Inter-server communication, .serverSideEmit
 export type InterServerEvents = {}
 // Socket.data attribute, (socket.data)
-export type SocketData = {
-	name: string
-	age: string
-}
-
-function waitFor(socket: ServerSocket | ClientSocket, event: string) {
-	return new Promise((resolve) => {
-		socket.once(event, resolve)
-	})
-}
+export type SocketData = {}
 
 describe('Socket Tests', () => {
-	let io: Server, serverSocket: ServerSocket, clientSocket: ClientSocket
+	let io: Server, clientSocket: ClientSocket
 	let httpServer: ReturnType<typeof createServer>
 
-	beforeAll(async () => {
-		httpServer = createServer(app)
+	beforeAll((done) => {
+		httpServer = createServer(app).listen()
 		io = new Server<
 			ServerToClientEvents,
 			ClientToServerEvents,
 			InterServerEvents,
 			SocketData
 		>(httpServer)
+		done()
+	})
 
-		await new Promise<void>((resolve) => {
-			httpServer.listen(() => {
-				const port = (httpServer.address() as AddressInfo).port
-				clientSocket = ioc(`http://localhost:${port}`, {
-					transports: ['websocket'],
-					forceNew: true,
-				})
-				io.on('connection', (socket: ServerSocket) => {
-					serverSocket = socket
-					console.log('User Connected to Socket:', socket.id)
-					resolve()
-				})
-			})
+	afterAll((done) => {
+		io.close()
+		httpServer.close()
+		done()
+	})
+
+	beforeEach((done) => {
+		const port = (httpServer.address() as AddressInfo).port
+		clientSocket = ioc(`http://localhost:${port}`, {
+			transports: ['websocket'],
+			forceNew: true,
+		})
+		clientSocket.on('connect', () => {
+			done()
 		})
 	})
 
-	afterAll(async () => {
-		await new Promise<void>((resolve) => {
-			io.close(() => {
-				clientSocket.disconnect()
-				httpServer.close(() => {
-					resolve()
-				})
-			})
-		})
+	afterEach((done) => {
+		if (clientSocket.connected) clientSocket.disconnect()
+		done()
 	})
 
-	test('should log connection', async () => {
-		const spy = jest.spyOn(console, 'log')
-		clientSocket.connect()
-		await waitFor(clientSocket, 'connect')
-		expect(spy).toHaveBeenCalledWith(
-			expect.stringContaining('User Connected to Socket:')
-		)
-		spy.mockRestore()
+	describe('Socket.io', () => {
+		test('should communicate', (done) => {
+			io.emit('echo', 'Hello World')
+			clientSocket.once('echo', (msg) => {
+				expect(msg).toBe('Hello World')
+				done()
+			})
+			io.on('connection', (socket) => {
+				expect(socket).toBeDefined()
+			})
+		})
 	})
 })
