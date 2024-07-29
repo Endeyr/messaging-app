@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
 import { NextFunction, Request, Response } from 'express'
 import { generateToken } from '../helpers/generateToken'
-import userModel, { IUser } from '../model/user'
+import userModel from '../model/user'
 import { RoleEnum, UserAuthRequest } from '../types/types'
 import { IUserDocument } from './../model/user'
 
@@ -13,7 +13,7 @@ export const registerUser = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const { username, email, password, role } = req.body as IUser
+	const { username, email, password, role } = req.body as IUserDocument
 	const existingUser = await userModel.findOne({ email })
 	if (existingUser) {
 		const error = new Error('User already registered')
@@ -67,18 +67,15 @@ export const loginUser = async (
 		existingUser = await userModel.findOne({ email })
 	} catch (err) {
 		const error = err as Error
-		console.log(error.message)
 		return res.status(400).send(error.message)
 	}
 	if (!existingUser) {
 		const error = new Error('Incorrect email or password')
-		console.log(error.message)
 		return res.status(400).send(error.message)
 	}
 	const isPasswordValid = await bcrypt.compare(password, existingUser.password)
 	if (!isPasswordValid) {
 		const error = new Error('Incorrect email or password')
-		console.log(error.message)
 		return res.status(400).send(error.message)
 	}
 	let token
@@ -86,7 +83,6 @@ export const loginUser = async (
 		token = generateToken(existingUser)
 	} catch (err) {
 		const error = new Error('Error generating token')
-		console.log(error.message)
 		return res.status(500).send(error.message)
 	}
 	return res.status(200).json({
