@@ -1,9 +1,9 @@
 import { type Server, type Socket } from 'socket.io'
 
 export const messageHandler = (io: Server, socket: Socket): void => {
-	const example = () => {
-		// logic
-	}
+	const messageSent = () => {}
+	const messageReceived = () => {}
 
-	socket.on('example', example)
+	socket.emit('message-sent', messageSent)
+	socket.emit('message-received', messageReceived)
 }
