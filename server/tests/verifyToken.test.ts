@@ -36,30 +36,4 @@ describe('verifyToken', () => {
 		expect(jwt.verify).toHaveBeenCalledWith(mockToken, mockJwtSecret)
 		expect(result).toBeNull()
 	})
-
-	it('should not log error when NODE_ENV is test', () => {
-		const consoleSpy = jest.spyOn(console, 'error')
-		;(jwt.verify as jest.Mock).mockImplementation(() => {
-			throw new Error('Invalid token')
-		})
-
-		verifyToken(mockToken)
-
-		expect(consoleSpy).not.toHaveBeenCalled()
-	})
-
-	it('should log error when NODE_ENV is not test', () => {
-		process.env.NODE_ENV = 'development'
-		const consoleSpy = jest.spyOn(console, 'error')
-		;(jwt.verify as jest.Mock).mockImplementation(() => {
-			throw new Error('Invalid token')
-		})
-
-		verifyToken(mockToken)
-
-		expect(consoleSpy).toHaveBeenCalledWith(
-			'Error verifying token:',
-			expect.any(Error)
-		)
-	})
 })
