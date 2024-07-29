@@ -1,3 +1,4 @@
+import { IRoomDocument } from './../model/room'
 import bcrypt from 'bcryptjs'
 import dotenv from 'dotenv'
 import { MongoMemoryServer } from 'mongodb-memory-server'
@@ -21,6 +22,7 @@ export let user2Token: string
 export let user3Token: string
 export let mockMessage1: IMessageDocument
 export let mockMessage2: IMessageDocument
+export let mockRoom: IRoomDocument
 let isSetup = false
 
 beforeAll(async () => {
@@ -82,6 +84,14 @@ beforeAll(async () => {
 			text: 'Here is a second message',
 		})
 		await mockMessage2.save()
+
+		mockRoom = new roomModel({
+			users: [mockUser, mockUser2],
+			name: 'test-room',
+		})
+
+		await mockRoom.save()
+
 		isSetup = true
 	} catch (error) {
 		console.error('Error in beforeAll setup:', error)

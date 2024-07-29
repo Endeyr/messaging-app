@@ -1,8 +1,10 @@
 import mongoose, { Document } from 'mongoose'
+import { IUserDocument } from './user'
 const { Schema, model } = mongoose
 
 export interface IRoom {
-	users: string[]
+	users: IUserDocument[]
+	name: string
 }
 
 export interface IRoomDocument extends IRoom, Document {
@@ -21,6 +23,10 @@ const roomSchema = new Schema(
 				},
 				message: 'A room must have at least one user.',
 			},
+		},
+		name: {
+			type: String,
+			required: true,
 		},
 	},
 	{

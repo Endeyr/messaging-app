@@ -3,7 +3,6 @@ import messageModel from '../model/messages'
 import roomModel from '../model/room'
 import userModel from '../model/user'
 import { RoleEnum } from './../types/types'
-import { describe } from 'node:test'
 
 describe('Mongoose Model Operations', () => {
 	describe('User Operations', () => {
@@ -72,14 +71,26 @@ describe('Mongoose Model Operations', () => {
 		it('should insert a room into collection', async () => {
 			const mockRoom = new roomModel({
 				users: ['Aaron', 'Adam', 'John'],
+				name: 'new',
 			})
 
 			const savedRoom = await mockRoom.save()
 			expect(savedRoom.users).toEqual(['Aaron', 'Adam', 'John'])
+			expect(savedRoom.name).toBe('new')
 		})
 
 		it('should not insert a room without users', async () => {
-			const invalidRoom = new roomModel({})
+			const invalidRoom = new roomModel({
+				name: 'invalid',
+			})
+
+			await expect(invalidRoom.save()).rejects.toThrow()
+		})
+
+		it('should not insert a room without a name', async () => {
+			const invalidRoom = new roomModel({
+				users: ['invalid'],
+			})
 
 			await expect(invalidRoom.save()).rejects.toThrow()
 		})
