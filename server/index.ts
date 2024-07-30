@@ -58,8 +58,6 @@ const onConnection = (socket: socketio.Socket) => {
 }
 
 io.on('connection', (socket) => {
-	const { id } = socket
-	console.log(`User Connected to Socket: ${id}`)
 	onConnection(socket)
 })
 

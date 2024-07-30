@@ -1,15 +1,12 @@
 import { createServer } from 'node:http'
 import { type AddressInfo } from 'node:net'
-import { setTimeout } from 'node:timers'
-import { Server, type Socket } from 'socket.io'
+import { Server } from 'socket.io'
 import { io as ioc, type Socket as ClientSocket } from 'socket.io-client'
 import app from '..'
 import roomModel from '../model/room'
 import messageModel, { IMessageDocument } from './../model/messages'
 import { IRoomDocument } from './../model/room'
 import { IUserDocument } from './../model/user'
-import { messageHandler } from './../socket_handlers/messageHandler'
-import { userHandler } from './../socket_handlers/userHandler'
 import { mockAdmin, mockRoom, mockUser } from './setupFile'
 
 // Sending and broadcasting events, .emit and .to
@@ -60,6 +57,7 @@ describe('Socket Tests', () => {
 
 	afterEach((done) => {
 		if (clientSocket.connected) clientSocket.disconnect()
+		jest.clearAllMocks()
 		done()
 	})
 
@@ -199,24 +197,6 @@ describe('Socket Tests', () => {
 					expect(console.log).toHaveBeenCalled()
 				})
 				done()
-			})
-		})
-
-		describe('Message Handler', () => {
-			const onConnection = (socket: Socket) => {
-				messageHandler(io, socket)
-			}
-			test('should', () => {
-				io.on('connection', onConnection)
-			})
-		})
-
-		describe('User Handler', () => {
-			const onConnection = (socket: Socket) => {
-				userHandler(io, socket)
-			}
-			test('should', () => {
-				io.on('connection', onConnection)
 			})
 		})
 	})
