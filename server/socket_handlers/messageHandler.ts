@@ -1,11 +1,12 @@
+import { IMessageDocument } from './../model/messages'
 import { type Server, type Socket } from 'socket.io'
 
 export const messageHandler = (io: Server, socket: Socket): void => {
-	const messageSent = () => {
-		console.log('Hello from messageSent')
+	const messageSent = (message: IMessageDocument) => {
+		console.log(message)
 	}
-	const messageReceived = () => {
-		console.log('Hello from messageReceived')
+	const messageReceived = (message: IMessageDocument) => {
+		console.log(message)
 	}
 
 	socket.on('message-sent', messageSent)
