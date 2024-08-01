@@ -18,7 +18,7 @@ import {
 	ServerToClientEventsType,
 	SocketDataType,
 } from '../types/socket-io'
-import { CLIENT_HOST, PORT } from '../utils/config'
+import { CLIENT_HOST, PORT, MONGO_URI } from '../utils/config'
 
 dotenv.config()
 const app = express()
@@ -79,25 +79,21 @@ io.on('connection', (socket) => {
 	onConnection(socket)
 })
 
-mongoose
-	.connect(
-		`mongodb+srv://${process.env.mongodbUsername}:${process.env.mongodbPassword}@messagingapp.fc5kqwd.mongodb.net/?retryWrites=true&w=majority&appName=MessagingApp`
-	)
-	.then(() => {
-		server
-			.listen(PORT, () => {
-				console.log(`SERVER IS RUNNING ON ${PORT}`)
+mongoose.connect(MONGO_URI).then(() => {
+	server
+		.listen(PORT, () => {
+			console.log(`SERVER IS RUNNING ON ${PORT}`)
+		})
+		// Fix for error EADDRINUSE
+		.on('error', function (err) {
+			process.once('SIGUSR2', function () {
+				process.kill(process.pid, 'SIGUSR2')
 			})
-			// Fix for error EADDRINUSE
-			.on('error', function (err) {
-				process.once('SIGUSR2', function () {
-					process.kill(process.pid, 'SIGUSR2')
-				})
-				process.on('SIGINT', function () {
-					// this is only called on ctrl+c, not restart
-					process.kill(process.pid, 'SIGINT')
-				})
+			process.on('SIGINT', function () {
+				// this is only called on ctrl+c, not restart
+				process.kill(process.pid, 'SIGINT')
 			})
-	})
+		})
+})
 
 export default app
