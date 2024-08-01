@@ -9,6 +9,7 @@ import {
 	connectionLost,
 	initSocket,
 } from '../features/socket/socketSlice'
+import { MessageType } from './../features/message/messageTypes'
 import type { SocketInterface } from './SocketFactory'
 import SocketFactory from './SocketFactory'
 
@@ -43,27 +44,24 @@ const socketMiddleware: Middleware = (store) => {
 		if (isAction(action)) {
 			switch (action.type) {
 				case 'user/login/fulfilled': {
-					socket.socket.on('message', (message) => {
+					socket.socket.on('message', (message: MessageType) => {
 						store.dispatch(
 							socketMessageReceived({
-								_id: message.id,
-								sender: message.sender,
-								recipient: message.recipient,
+								_id: message._id,
+								sent_from: message.sent_from,
+								sent_to: message.sent_to,
+								room: message.room,
 								text: message.text,
+								media_url: message.media_url,
 								createdAt: message.createdAt,
+								updatedAt: message.updatedAt,
 							})
 						)
 					})
 					break
 				}
 				case messageSent.type: {
-					const message = (
-						action as PayloadAction<{
-							id: number
-							text: string
-							sender: string
-						}>
-					).payload
+					const message = (action as PayloadAction<MessageType>).payload
 					socket.socket.emit('message', message)
 					break
 				}
