@@ -62,6 +62,14 @@ if (process.env.NODE_ENV === 'test') {
 app.use('/api/user', userRouter)
 app.use('/message', messageRouter)
 
+app.get('/', (req, res) => {
+	res
+		.status(200)
+		.send(
+			'Welcome to the messaging app backend. Authorized users can access the /message api endpoint.'
+		)
+})
+
 const onConnection = (socket: socketio.Socket) => {
 	userHandler(io, socket)
 	messageHandler(io, socket)
