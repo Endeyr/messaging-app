@@ -23,7 +23,12 @@ import { CLIENT_HOST, PORT } from './utils/config'
 dotenv.config()
 const app = express()
 app.use(express.static(path.join(__dirname, 'build')))
-app.use(cors())
+
+const corsOptions = {
+	origin: [CLIENT_HOST],
+}
+
+app.use(cors(corsOptions))
 
 const server: http.Server = http.createServer(app)
 
