@@ -26,6 +26,8 @@ app.use(express.static(path.join(__dirname, 'build')))
 
 app.use(cors())
 
+app.options('*', cors())
+
 const server: http.Server = http.createServer(app)
 
 const io: socketio.Server = new socketio.Server<
