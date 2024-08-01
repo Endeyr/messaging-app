@@ -1,5 +1,5 @@
 import supertest from 'supertest'
-import app from '..'
+import app from '../api'
 import { authToken, user3Token } from './setupFile'
 
 describe('Auth Operations', () => {

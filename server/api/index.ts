@@ -7,18 +7,18 @@ import http from 'http'
 import mongoose from 'mongoose'
 import path from 'path'
 import * as socketio from 'socket.io'
-import messageRouter from './routes/messageRoutes'
-import userRouter from './routes/userRoutes'
-import { messageHandler } from './socket_handlers/messageHandler'
-import { userHandler } from './socket_handlers/userHandler'
-import { mockAuthMiddleware } from './tests/mockAuthMiddleware'
+import messageRouter from '../routes/messageRoutes'
+import userRouter from '../routes/userRoutes'
+import { messageHandler } from '../socket_handlers/messageHandler'
+import { userHandler } from '../socket_handlers/userHandler'
+import { mockAuthMiddleware } from '../tests/mockAuthMiddleware'
 import {
 	ClientToServerEventsType,
 	InterServerEventsType,
 	ServerToClientEventsType,
 	SocketDataType,
-} from './types/socket-io'
-import { CLIENT_HOST, PORT } from './utils/config'
+} from '../types/socket-io'
+import { CLIENT_HOST, PORT } from '../utils/config'
 
 dotenv.config()
 const app = express()
