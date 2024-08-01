@@ -6,10 +6,10 @@ const Message = ({ msg }: { msg: MessageType }) => {
 	const dispatch = useAppDispatch()
 	return (
 		<>
-			<h2>From: {msg.sender}</h2>
-			<h4>To: {msg.recipient}</h4>
+			<h2>From: {msg.sent_from.username}</h2>
+			{msg.sent_to && <h4>To: {msg.sent_to.username}</h4>}
 			<p>{msg.text}</p>
-			<div>{new Date(msg.createdAt).toLocaleString('en-US')}</div>
+			{msg.createdAt && <div>{msg.createdAt.toLocaleString('en-US')}</div>}
 			<Button color="error" onClick={() => dispatch(deleteMessage(msg._id))}>
 				Delete
 			</Button>
