@@ -1,14 +1,20 @@
+import { UserType } from '../auth/authTypes'
+import { RoomType } from './../../types/Room'
+
 export type MessageType = {
 	_id: string
-	sender: string
-	recipient: string
+	sent_from: UserType
+	sent_to?: UserType
+	room?: RoomType
 	text: string
-	createdAt: string
+	media_url?: string
+	createdAt?: Date
+	updatedAt?: Date
 }
 
 export type MessageDeleteType = {
 	id: string
-	message: string
+	message: MessageType
 }
 
 export type MessageStateType = {

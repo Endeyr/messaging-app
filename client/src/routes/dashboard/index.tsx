@@ -9,11 +9,7 @@ import {
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import Message from '../../components/Message'
-import Messenger from '../../components/Messenger'
-import Socket from '../../components/Socket'
 import { getMessages, reset } from '../../features/message/messageSlice'
-import { MessageType } from '../../features/message/messageTypes'
 // @desc All of users friends, messages, ect?
 // @private Must be logged in
 
@@ -22,8 +18,9 @@ const DashboardPage = () => {
 	const dispatch = useAppDispatch()
 	const { user } = useAppSelector((state) => state.auth)
 	const { messages, isLoading, isError, message } = useAppSelector(
-		(state) => state.message
+		(state) => state.messages
 	)
+
 	useEffect(() => {
 		if (!user) {
 			navigate('/authentication/login')
@@ -38,6 +35,10 @@ const DashboardPage = () => {
 
 	if (isLoading) {
 		return <div>...Loading</div>
+	}
+
+	if (isError) {
+		return <div>Error: {message}</div>
 	}
 
 	return (
@@ -57,6 +58,7 @@ const DashboardPage = () => {
 						<ListItem alignItems="flex-start">
 							<ListItemText primary="Room Number" />
 						</ListItem>
+						{/* TODO Get and display rooms */}
 					</List>
 				</Box>
 			</Grid>
@@ -66,57 +68,25 @@ const DashboardPage = () => {
 						Messages
 					</Box>
 					<List sx={{ width: '100%', maxWidth: 360 }}>
-						<ListItem alignItems="flex-start">
-							<ListItemText
-								primary="Title"
-								secondary={
-									<>
-										<Typography
-											component="span"
-											variant="body2"
-											sx={{ display: 'inline' }}
-										>
-											Username
-										</Typography>
-										{' - message here!!!'}
-									</>
-								}
-							/>
-						</ListItem>
-						<ListItem alignItems="flex-start">
-							<ListItemText
-								primary="Title"
-								secondary={
-									<>
-										<Typography
-											component="span"
-											variant="body2"
-											sx={{ display: 'inline' }}
-										>
-											Username
-										</Typography>
-										{' - message here!!!'}
-									</>
-								}
-							/>
-						</ListItem>
-						<ListItem alignItems="flex-start">
-							<ListItemText
-								primary="Title"
-								secondary={
-									<>
-										<Typography
-											component="span"
-											variant="body2"
-											sx={{ display: 'inline' }}
-										>
-											Username
-										</Typography>
-										{' - message here!!!'}
-									</>
-								}
-							/>
-						</ListItem>
+						{messages &&
+							messages.map((msg) => (
+								<ListItem alignItems="flex-start">
+									<ListItemText
+										primary={msg.text}
+										secondary={
+											<>
+												<Typography
+													component="span"
+													variant="body2"
+													sx={{ display: 'inline' }}
+												>
+													From: {msg.sent_from.username}
+												</Typography>
+											</>
+										}
+									/>
+								</ListItem>
+							))}
 					</List>
 				</Box>
 			</Grid>
