@@ -24,9 +24,14 @@ dotenv.config()
 const app = express()
 app.use(express.static(path.join(__dirname, 'build')))
 
-app.use(cors())
+const corsOptions = {
+	origin: CLIENT_HOST,
+	optionsSuccessStatus: 200,
+}
 
-app.options('*', cors())
+app.use(cors(corsOptions))
+
+app.options('*', cors(corsOptions))
 
 const server: http.Server = http.createServer(app)
 
