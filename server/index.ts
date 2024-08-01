@@ -24,6 +24,8 @@ dotenv.config()
 const app = express()
 app.use(express.static(path.join(__dirname, 'build')))
 
+console.log('Client Host:', process.env.CLIENT_HOST)
+
 const corsOptions = {
 	origin: CLIENT_HOST,
 	optionsSuccessStatus: 200,
