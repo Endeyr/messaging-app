@@ -18,7 +18,7 @@ import {
 	ServerToClientEventsType,
 	SocketDataType,
 } from '../types/socket-io'
-import { CLIENT_HOST, PORT, MONGO_URI } from '../utils/config'
+import { CLIENT_HOST, MONGO_URI, PORT } from '../utils/config'
 
 dotenv.config()
 const app = express()
@@ -44,7 +44,8 @@ const io: socketio.Server = new socketio.Server<
 	SocketDataType
 >(server, {
 	cors: {
-		origin: CLIENT_HOST,
+		origin: 'https://messaging-app-frontend-one.vercel.app',
+		optionsSuccessStatus: 200,
 		methods: ['GET', 'POST'],
 	},
 })
