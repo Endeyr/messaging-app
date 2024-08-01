@@ -2,7 +2,7 @@ import axios from 'axios'
 import { MessageFormDataType } from './../../types/Message'
 import { MessageDeleteType, MessageType } from './messageTypes'
 
-const API_URL = 'http://localhost:5174/message/'
+const API_URL = `${import.meta.env.VITE_API_URL}/message/`
 
 const createText = async (
 	textData: MessageFormDataType,

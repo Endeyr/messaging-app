@@ -21,6 +21,7 @@ import {
 import { CLIENT_HOST, PORT } from './utils/config'
 
 dotenv.config()
+console.log(CLIENT_HOST, PORT)
 const app = express()
 app.use(express.static(path.join(__dirname, 'build')))
 

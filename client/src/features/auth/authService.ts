@@ -3,7 +3,7 @@ import { LoginFormDataType } from '../../types/Login'
 import { RegisterFormDataType } from './../../types/Register'
 import { UserResponseDataType, UserType } from './authTypes'
 
-const API_URL = 'http://localhost:5174/api/user/'
+const API_URL = `${import.meta.env.VITE_API_URL}/api/user/`
 
 const register = async (userData: RegisterFormDataType): Promise<UserType> => {
 	const response = await axios.post<UserResponseDataType>(
