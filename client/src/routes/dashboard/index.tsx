@@ -58,7 +58,7 @@ const DashboardPage = () => {
 						<ListItem alignItems="flex-start">
 							<ListItemText primary="Room Number" />
 						</ListItem>
-						{/* TODO Get and display rooms */}
+						{/* TODO Get and display rooms, have rooms in socket - features/auth */}
 					</List>
 				</Box>
 			</Grid>

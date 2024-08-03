@@ -1,14 +1,16 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { createAppSlice } from '../../app/createAppSlice';
-import { type UserType } from '../auth/authTypes';
-import socketService from './socketService';
-import { type SocketStateType, type joinRoomType } from './socketTypes';
+import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAppSlice } from '../../app/createAppSlice'
+import { type UserType } from '../auth/authTypes'
+import socketService from './socketService'
+import { type SocketStateType, type joinRoomType } from './socketTypes'
 
 const initialState: SocketStateType = {
 	isConnected: false,
 	rooms: [],
 	isSuccess: false,
 }
+
+// TODO need a getRooms for when a user first loads the page
 
 export const newUser = createAsyncThunk<
 	void,
