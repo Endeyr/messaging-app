@@ -1,5 +1,5 @@
 import { z, ZodType } from 'zod'
-import { RegisterFormDataType, RoleEnum } from '../types/Register'
+import { type RegisterFormDataType, RoleEnum } from '../types/Register'
 
 const roleEnumValues = Object.values(RoleEnum) as [RoleEnum, ...RoleEnum[]]
 

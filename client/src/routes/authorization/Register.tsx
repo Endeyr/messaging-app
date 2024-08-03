@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Button, FormControl } from '@mui/material'
 import { useEffect } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { type SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { ZodError } from 'zod'
@@ -14,7 +14,7 @@ import {
 import { socket } from '../../features/socket/socketService'
 import { newUser } from '../../features/socket/socketSlice'
 import { registerSchema } from '../../schema/RegisterSchema'
-import { RegisterFormDataType, RoleEnum } from '../../types/Register'
+import { type RegisterFormDataType, RoleEnum } from '../../types/Register'
 
 const RegisterPage = () => {
 	const navigate = useNavigate()

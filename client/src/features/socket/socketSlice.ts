@@ -1,8 +1,8 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
-import { createAppSlice } from '../../app/createAppSlice'
-import { UserType } from '../auth/authTypes'
-import socketService from './socketService'
-import { SocketStateType, joinRoomType } from './socketTypes'
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAppSlice } from '../../app/createAppSlice';
+import { type UserType } from '../auth/authTypes';
+import socketService from './socketService';
+import { type SocketStateType, type joinRoomType } from './socketTypes';
 
 const initialState: SocketStateType = {
 	isConnected: false,

@@ -1,7 +1,7 @@
 import { Button } from '@mui/material'
 import { useAppDispatch } from '../app/hooks'
 import { deleteMessage } from '../features/message/messageSlice'
-import { MessageType } from '../features/message/messageTypes'
+import { type MessageType } from '../features/message/messageTypes'
 const Message = ({ msg }: { msg: MessageType }) => {
 	const dispatch = useAppDispatch()
 	return (

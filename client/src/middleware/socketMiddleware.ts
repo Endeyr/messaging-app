@@ -1,5 +1,5 @@
-import { PayloadAction, isAction } from '@reduxjs/toolkit'
-import { Middleware } from 'redux'
+import { type PayloadAction, isAction } from '@reduxjs/toolkit'
+import { type Middleware } from 'redux'
 import {
 	messageSent,
 	socketMessageReceived,
@@ -9,7 +9,7 @@ import {
 	connectionLost,
 	initSocket,
 } from '../features/socket/socketSlice'
-import { MessageType } from './../features/message/messageTypes'
+import { type MessageType } from './../features/message/messageTypes'
 import type { SocketInterface } from './SocketFactory'
 import SocketFactory from './SocketFactory'
 

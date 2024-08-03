@@ -1,6 +1,6 @@
 import io from 'socket.io-client'
 import { WEB_SOCKET_HOST } from '../../config'
-import { UserType } from '../auth/authTypes'
+import { type UserType } from '../auth/authTypes'
 
 export const socket = io(WEB_SOCKET_HOST, {
 	autoConnect: false,

@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material'
-import { FormFieldPropsType } from '../types/Login'
+import { type FormFieldPropsType } from '../types/Login'
 
 const LoginFormField: React.FC<FormFieldPropsType> = ({
 	type,

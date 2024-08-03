@@ -1,4 +1,4 @@
-import { FieldError, UseFormRegister } from 'react-hook-form'
+import { type FieldError, type UseFormRegister } from 'react-hook-form'
 
 export enum RoleEnum {
 	user = 'user',

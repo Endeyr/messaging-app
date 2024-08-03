@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { createAppSlice } from '../../app/createAppSlice'
-import { LoginFormDataType } from '../../types/Login'
-import { RegisterFormDataType } from './../../types/Register'
+import { type LoginFormDataType } from '../../types/Login'
+import { type RegisterFormDataType } from './../../types/Register'
 import authService from './authService'
-import { UserType } from './authTypes'
+import { type UserType } from './authTypes'
 
 type AuthStateType = {
 	user: UserType | null

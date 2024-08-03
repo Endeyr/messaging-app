@@ -1,5 +1,5 @@
-import { UserType } from '../auth/authTypes'
-import { RoomType } from './../../types/Room'
+import { type UserType } from '../auth/authTypes'
+import { type RoomType } from './../../types/Room'
 
 export type MessageType = {
 	_id: string

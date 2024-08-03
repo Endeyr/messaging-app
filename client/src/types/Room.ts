@@ -1,4 +1,4 @@
-import { UserType } from '../features/auth/authTypes'
+import { type UserType } from '../features/auth/authTypes'
 
 export type RoomType = {
 	users: UserType[]

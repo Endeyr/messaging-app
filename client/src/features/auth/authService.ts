@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { LoginFormDataType } from '../../types/Login'
-import { RegisterFormDataType } from './../../types/Register'
-import { UserResponseDataType, UserType } from './authTypes'
+import { type LoginFormDataType } from '../../types/Login'
+import { type RegisterFormDataType } from './../../types/Register'
+import { type UserResponseDataType, type UserType } from './authTypes'
 
 const API_URL = `${import.meta.env.VITE_API_URL}/api/user/`
 
