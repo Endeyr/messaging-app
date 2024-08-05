@@ -10,6 +10,7 @@ import * as socketio from 'socket.io'
 import messageRouter from '../routes/messageRoutes'
 import userRouter from '../routes/userRoutes'
 import { messageHandler } from '../socket_handlers/messageHandler'
+import { roomHandler } from '../socket_handlers/roomHandler'
 import { userHandler } from '../socket_handlers/userHandler'
 import { mockAuthMiddleware } from '../tests/mockAuthMiddleware'
 import {
@@ -72,6 +73,7 @@ app.get('/', (req, res) => {
 const onConnection = (socket: socketio.Socket) => {
 	userHandler(io, socket)
 	messageHandler(io, socket)
+	roomHandler(io, socket)
 }
 
 io.on('connection', (socket) => {

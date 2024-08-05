@@ -1,6 +1,8 @@
+import type { RoomType } from './socketTypes'
 import io from 'socket.io-client'
 import { WEB_SOCKET_HOST } from '../../config'
 import { type UserType } from '../auth/authTypes'
+import type { MessageType } from '../message/messageTypes'
 
 export const socket = io(WEB_SOCKET_HOST, {
 	autoConnect: false,
@@ -15,22 +17,32 @@ if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
 
 const newUser = (user: UserType) => {
 	socket.auth = { username: user.username }
-	socket.emit('new user', user)
+	socket.emit('user-connected', user)
 }
 
-const joinRoom = (room: string, username: string) => {
-	socket.emit('join room', room, username)
+const joinRoom = (room: RoomType, user: UserType) => {
+	socket.emit('user-joined-room', room, user)
 }
 
-const leaveRoom = (room: string, username: string) => {
-	socket.emit('leave room', room, username)
+const leaveRoom = (room: RoomType, user: UserType) => {
+	socket.emit('user-left-room', room, user)
 }
 
-const sendMessage = (message: string, room: string, username: string) => {
-	socket.emit('send message', {
+const sentMessage = (message: MessageType, room: RoomType, user: UserType) => {
+	socket.emit('message-sent', {
 		content: message,
 		room,
-		from: username,
+		from: user,
+	})
+}
+
+const receiveMessage = (
+	message: MessageType,
+	room: RoomType,
+	username: UserType
+) => {
+	socket.on('message-received', () => {
+		console.log(message, room, username)
 	})
 }
 
@@ -38,7 +50,8 @@ const socketService = {
 	newUser,
 	joinRoom,
 	leaveRoom,
-	sendMessage,
+	sentMessage,
+	receiveMessage,
 }
 
 export default socketService

@@ -1,13 +1,13 @@
-import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
+import { type PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { createAppSlice } from '../../app/createAppSlice'
-import { RootState } from '../../app/store'
-import { MessageFormDataType } from '../../types/Message'
+import { type RootState } from '../../app/store'
+import { type MessageFormDataType } from '../../types/Message'
 import messageService from './messageService'
 import {
-	MessageDeleteType,
-	MessageStateType,
-	MessageType,
+	type MessageDeleteType,
+	type MessageStateType,
+	type MessageType,
 } from './messageTypes'
 
 const initialState: MessageStateType = {

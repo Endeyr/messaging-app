@@ -1,6 +1,7 @@
 import { type Server, type Socket } from 'socket.io'
-import { IRoomDocument } from './../model/room'
-import { IUserDocument } from './../model/user'
+import roomModel from '../model/room'
+import { type IRoomDocument } from './../model/room'
+import { type IUserDocument } from './../model/user'
 
 export const userHandler = (io: Server, socket: Socket): void => {
 	const userConnected = (user: IUserDocument) => {
@@ -20,12 +21,10 @@ export const userHandler = (io: Server, socket: Socket): void => {
 
 	const userCreatedRoom = (room: IRoomDocument, user: IUserDocument) => {
 		console.log(`Room Created: ${room.name} by ${user.username}`)
+		// add user to room
+		room.users.push(user)
 		// Broadcast to all clients that a new room was created
-		io.emit('room-created', {
-			roomId: room._id,
-			roomName: room.name,
-			createdBy: user,
-		})
+		io.emit('room-created', room)
 	}
 
 	const userJoinedRoom = (room: IRoomDocument, user: IUserDocument) => {

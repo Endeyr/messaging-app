@@ -2,16 +2,15 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { createAppSlice } from '../../app/createAppSlice'
 import { type UserType } from '../auth/authTypes'
 import socketService from './socketService'
-import { type SocketStateType, type joinRoomType } from './socketTypes'
+import type { JoinRoomType, RoomType, SocketStateType } from './socketTypes'
 
 const initialState: SocketStateType = {
 	isConnected: false,
 	rooms: [],
 	isSuccess: false,
+	isError: false,
+	message: '',
 }
-
-// TODO need a getRooms for when a user first loads the page
-
 export const newUser = createAsyncThunk<
 	void,
 	UserType,
@@ -22,22 +21,22 @@ export const newUser = createAsyncThunk<
 })
 
 export const joinRoom = createAsyncThunk<
-	string,
-	joinRoomType,
+	RoomType,
+	JoinRoomType,
 	{ rejectValue: string }
->('socket/joinRoom', (args: joinRoomType) => {
-	const { room, username } = args
-	socketService.joinRoom(room, username)
+>('socket/joinRoom', (args) => {
+	const { room, user } = args
+	socketService.joinRoom(room, user)
 	return room
 })
 
 export const leaveRoom = createAsyncThunk<
-	string,
-	joinRoomType,
+	RoomType,
+	JoinRoomType,
 	{ rejectValue: string }
->('socket/leaveRoom', (args: joinRoomType) => {
-	const { room, username } = args
-	socketService.leaveRoom(room, username)
+>('socket/leaveRoom', (args) => {
+	const { room, user } = args
+	socketService.leaveRoom(room, user)
 	return room
 })
 

@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { MessageFormDataType } from './../../types/Message'
-import { MessageDeleteType, MessageType } from './messageTypes'
+import { type MessageFormDataType } from './../../types/Message'
+import { type MessageDeleteType, type MessageType } from './messageTypes'
 
 const API_URL = `${import.meta.env.VITE_API_URL}/message/`
 
