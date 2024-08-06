@@ -6,12 +6,19 @@ import {
 	connectionLost,
 	joinRoom,
 } from '../features/socket/socketSlice'
+import type { RoomType } from '../types/Room'
+
+const initialRoom = {
+	users: [],
+	name: '',
+}
 
 const Socket = () => {
 	const dispatch = useAppDispatch()
 	const { user } = useAppSelector((state) => state.auth)
 	const { rooms } = useAppSelector((state) => state.socket)
-	const [room, setRoom] = useState('')
+	const [room, setRoom] = useState<RoomType>(initialRoom)
+	const [roomName, setRoomName] = useState('')
 	const [isInRoom, setIsInRoom] = useState(false)
 
 	useEffect(() => {
@@ -39,8 +46,14 @@ const Socket = () => {
 
 	const handleJoinRoom = (e: React.FormEvent) => {
 		e.preventDefault()
-		const username = user?.username as string
-		dispatch(joinRoom({ room, username }))
+		if (user) {
+			setRoom((prev) => ({
+				...prev,
+				name: roomName,
+				users: [...prev.users, user],
+			}))
+			dispatch(joinRoom({ room, user }))
+		}
 		setIsInRoom(true)
 	}
 	return (
@@ -52,9 +65,9 @@ const Socket = () => {
 						<form onSubmit={handleJoinRoom}>
 							<input
 								placeholder="Room Number..."
-								value={room}
+								value={roomName}
 								onChange={(e) => {
-									setRoom(e.target.value)
+									setRoomName(e.target.value)
 								}}
 							/>
 							<button type="submit"> Join Room</button>
@@ -63,7 +76,7 @@ const Socket = () => {
 				) : (
 					<>
 						{rooms.map((rm, idx) => {
-							return <p key={idx}>Room: {rm}</p>
+							return <p key={idx}>Room: {rm.name}</p>
 						})}
 					</>
 				)}
