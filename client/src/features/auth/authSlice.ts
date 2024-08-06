@@ -21,7 +21,7 @@ const initialState: AuthStateType = {
 	user: parsedUser,
 	isError: false,
 	isSuccess: false,
-	isLoading: false,
+	isLoading: true,
 	message: '',
 }
 

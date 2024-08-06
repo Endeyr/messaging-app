@@ -48,7 +48,7 @@ const LoginPage = () => {
 			socket.connect()
 			navigate('/')
 		}
-		dispatch(userReset())
+		setTimeout(() => dispatch(userReset()), 10)
 	}, [user, isError, isSuccess, message, navigate, dispatch])
 
 	if (isLoading) {

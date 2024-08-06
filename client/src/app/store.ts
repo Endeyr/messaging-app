@@ -9,6 +9,7 @@ import { messageSlice } from '../features/message/messageSlice'
 import { type MessageType } from '../features/message/messageTypes'
 import { socketSlice } from '../features/socket/socketSlice'
 import socketMiddleware from '../middleware/socketMiddleware'
+import type { RoomType } from '../types/Room'
 import { authSlice } from './../features/auth/authSlice'
 
 const middleware = [socketMiddleware]
@@ -32,7 +33,7 @@ if (persistedMessagesString || persistedRoomsString) {
 		},
 		socket: {
 			rooms: persistedRoomsString
-				? (JSON.parse(persistedRoomsString) as string[])
+				? (JSON.parse(persistedRoomsString) as RoomType[])
 				: [],
 			isConnected: false,
 			isSuccess: true,
@@ -45,7 +46,7 @@ if (persistedMessagesString || persistedRoomsString) {
 		messages: {
 			messages: [],
 			isSuccess: false,
-			isLoading: false,
+			isLoading: true,
 			isError: false,
 			message: '',
 		},
