@@ -76,7 +76,7 @@ const LoginPage = () => {
 									name="email"
 									error={errors.email}
 									register={register}
-									required
+									required={true}
 								></LoginFormField>
 								<LoginFormField
 									type="password"
@@ -85,7 +85,7 @@ const LoginPage = () => {
 									name="password"
 									error={errors.password}
 									register={register}
-									required
+									required={true}
 								></LoginFormField>
 								<Button type="submit">Submit</Button>
 							</Box>

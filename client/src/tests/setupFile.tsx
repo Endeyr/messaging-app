@@ -1,6 +1,7 @@
 import { configureStore, type EnhancedStore } from '@reduxjs/toolkit'
 import '@testing-library/jest-dom'
 import { render, type RenderOptions } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import type { ReactElement, ReactNode } from 'react'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
@@ -32,6 +33,9 @@ vi.mock('../features/socket/socketService', () => ({
 		disconnect: vi.fn(),
 	},
 }))
+
+// Mock user
+export const mockUser = userEvent.setup()
 
 // Mock store
 export const createMockStore = (initialState = {}) => {

@@ -21,9 +21,9 @@ const LoginFormField: React.FC<FormFieldPropsType> = ({
 			{...register(name, { valueAsNumber, required })}
 		></TextField>
 		{error && (
-			<span style={{ color: 'red' }}>
+			<p style={{ color: 'red' }}>
 				{error.message ? error.message : 'This is a required field'}
-			</span>
+			</p>
 		)}
 	</>
 )
