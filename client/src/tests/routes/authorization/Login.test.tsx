@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom'
-import { screen } from '@testing-library/react'
-import { act } from 'react'
+import { screen, act } from '@testing-library/react'
 import { toast } from 'react-toastify'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import LoginPage from '../../../routes/authorization/Login'
@@ -33,7 +32,7 @@ describe('LoginPage', () => {
 		})
 		loggedInStore = createMockStore({
 			auth: {
-				user: { username: 'testuser' },
+				user: { username: 'testUser' },
 				isLoading: false,
 				isError: false,
 				isSuccess: true,
@@ -110,7 +109,7 @@ describe('LoginPage', () => {
 			renderWithProviders(<LoginPage />, { store: loggedInStore })
 		})
 
-		expect(screen.getByText('testuser already logged in')).toBeInTheDocument()
+		expect(screen.getByText('testUser already logged in')).toBeInTheDocument()
 		expect(screen.getByText('Home')).toBeInTheDocument()
 	})
 
