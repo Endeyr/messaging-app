@@ -17,7 +17,7 @@ export const registerUser = async (
 	const existingUser = await userModel.findOne({ email })
 	if (existingUser) {
 		const error = new Error('User already registered')
-		return res.status(400).send(error.message)
+		return res.status(401).send(error.message)
 	}
 	const salt = await bcrypt.genSalt(10)
 	const hashedPassword = await bcrypt.hash(password, salt)
@@ -31,7 +31,7 @@ export const registerUser = async (
 		await newUser.save()
 	} catch (err) {
 		const error = err as Error
-		return res.status(400).send(error.message)
+		return res.status(401).send(error.message)
 	}
 	let token: string
 	try {
