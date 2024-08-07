@@ -67,16 +67,16 @@ export const loginUser = async (
 		existingUser = await userModel.findOne({ email })
 	} catch (err) {
 		const error = err as Error
-		return res.status(400).send(error.message)
+		return res.status(401).send(error.message)
 	}
 	if (!existingUser) {
 		const error = new Error('Incorrect email or password')
-		return res.status(400).send(error.message)
+		return res.status(401).send(error.message)
 	}
 	const isPasswordValid = await bcrypt.compare(password, existingUser.password)
 	if (!isPasswordValid) {
 		const error = new Error('Incorrect email or password')
-		return res.status(400).send(error.message)
+		return res.status(401).send(error.message)
 	}
 	let token
 	try {
