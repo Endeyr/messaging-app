@@ -7,13 +7,12 @@ import {
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { messageSlice } from '../features/message/messageSlice'
 import { type MessageType } from '../features/message/messageTypes'
-import { socketSlice } from '../features/socket/socketSlice'
-import socketMiddleware from '../middleware/socketMiddleware'
-import type { RoomType } from '../types/Room'
 import { authSlice } from './../features/auth/authSlice'
+import { listenerMiddleware } from './../middleware/listenerMiddleware'
+import { socketMiddleware } from './../middleware/socketMiddleware'
 
-const middleware = [socketMiddleware]
-const rootReducer = combineSlices(authSlice, messageSlice, socketSlice)
+const middleware = [listenerMiddleware.middleware, socketMiddleware]
+const rootReducer = combineSlices(authSlice, messageSlice)
 
 // Preload state from local storage
 let preloadedState: Partial<RootState> | undefined
@@ -31,15 +30,6 @@ if (persistedMessagesString || persistedRoomsString) {
 			isError: false,
 			message: '',
 		},
-		socket: {
-			rooms: persistedRoomsString
-				? (JSON.parse(persistedRoomsString) as RoomType[])
-				: [],
-			isConnected: false,
-			isSuccess: true,
-			isError: false,
-			message: '',
-		},
 	}
 } else {
 	preloadedState = {
@@ -47,13 +37,6 @@ if (persistedMessagesString || persistedRoomsString) {
 			messages: [],
 			isSuccess: false,
 			isLoading: true,
-			isError: false,
-			message: '',
-		},
-		socket: {
-			rooms: [],
-			isConnected: false,
-			isSuccess: false,
 			isError: false,
 			message: '',
 		},

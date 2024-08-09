@@ -3,10 +3,11 @@ import { type IMessageDocument } from './../model/messages'
 
 export const messageHandler = (io: Server, socket: Socket): void => {
 	const messageSent = (message: IMessageDocument) => {
-		io.emit('message-sent', message)
+		console.log(message)
+		io.emit('message-received', message) // broadcast to others in room or private
 	}
 	const messageReceived = (message: IMessageDocument) => {
-		io.emit('message-received', message)
+		io.emit('message-sent', message)
 	}
 
 	socket.on('message-sent', messageSent)

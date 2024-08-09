@@ -11,7 +11,6 @@ import {
 	login as userLogin,
 	reset as userReset,
 } from '../../features/auth/authSlice'
-import { socket } from '../../features/socket/socketService'
 import { loginSchema } from '../../schema/LoginSchema'
 import { type LoginFormDataType } from '../../types/Login'
 
@@ -43,7 +42,6 @@ const LoginPage = () => {
 			toast.error(message)
 		}
 		if (isSuccess || user) {
-			socket.connect()
 			navigate('/')
 		}
 		setTimeout(() => dispatch(userReset()), 10)

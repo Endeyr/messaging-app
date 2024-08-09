@@ -11,8 +11,6 @@ import {
 	register as userRegister,
 	reset as userReset,
 } from '../../features/auth/authSlice'
-import { socket } from '../../features/socket/socketService'
-// import { newUser } from '../../features/socket/socketSlice'
 import { registerSchema } from '../../schema/RegisterSchema'
 import { type RegisterFormDataType, RoleEnum } from '../../types/Register'
 
@@ -44,8 +42,6 @@ const RegisterPage = () => {
 			toast.error(message)
 		}
 		if (isSuccess || user) {
-			// dispatch(newUser(user!))
-			socket.connect()
 			navigate('/')
 		}
 		setTimeout(() => dispatch(userReset()), 10)

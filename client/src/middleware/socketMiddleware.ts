@@ -1,80 +1,144 @@
-import { type PayloadAction, isAction } from '@reduxjs/toolkit'
-import { type Middleware } from 'redux'
-import {
-	messageSent,
-	socketMessageReceived,
-} from '../features/message/messageSlice'
-import {
-	connectionEstablished,
-	connectionLost,
-	initSocket,
-} from '../features/socket/socketSlice'
-import { type MessageType } from './../features/message/messageTypes'
-import type { SocketInterface } from './SocketFactory'
-import SocketFactory from './SocketFactory'
+import type { Dispatch, Middleware, MiddlewareAPI } from 'redux'
+import { Socket, io } from 'socket.io-client'
+import { WEB_SOCKET_HOST } from '../config'
+import type { RootState } from './../app/store'
 
-enum SocketEvent {
-	Connect = 'connect',
-	Disconnect = 'disconnect',
-	Error = 'err',
+// Define action types as an enum
+export enum WebSocketActionType {
+	WS_CONNECT = 'WS_CONNECT',
+	WS_DISCONNECT = 'WS_DISCONNECT',
+	WS_CONNECTED = 'WS_CONNECTED',
+	WS_DISCONNECTED = 'WS_DISCONNECTED',
+	USER_CONNECTED = 'USER_CONNECTED',
+	USER_ONLINE = 'USER_ONLINE',
+	CREATE_ROOM = 'CREATE_ROOM',
+	JOIN_ROOM = 'JOIN_ROOM',
+	LEAVE_ROOM = 'LEAVE_ROOM',
+	SEND_MESSAGE = 'SEND_MESSAGE',
+	GET_ROOMS = 'GET_ROOMS',
 }
 
-const socketMiddleware: Middleware = (store) => {
-	let socket: SocketInterface
+export const socketMiddleware: Middleware<Dispatch, RootState> = (
+	store: MiddlewareAPI<Dispatch, RootState>
+) => {
+	let socket: Socket | null = null
 
-	return (next) => (action: unknown) => {
-		if (initSocket.match(action)) {
-			if (!socket && typeof window !== 'undefined') {
-				socket = SocketFactory.create()
-
-				socket.socket.on(SocketEvent.Connect, () => {
-					store.dispatch(connectionEstablished())
-				})
-
-				socket.socket.on(SocketEvent.Error, (message) => {
-					console.error(message)
-				})
-
-				socket.socket.on(SocketEvent.Disconnect, (reason) => {
-					console.log(reason)
-					store.dispatch(connectionLost())
-				})
-			}
-		}
-		if (isAction(action)) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	return (next) => (action: any) => {
+		const { dispatch, getState } = store
+		const { auth } = getState()
+		if ('type' in action) {
 			switch (action.type) {
-				case 'user/login/fulfilled': {
-					socket.socket.on('message', (message: MessageType) => {
-						store.dispatch(
-							socketMessageReceived({
-								_id: message._id,
-								sent_from: message.sent_from,
-								sent_to: message.sent_to,
-								room: message.room,
-								text: message.text,
-								media_url: message.media_url,
-								createdAt: message.createdAt,
-								updatedAt: message.updatedAt,
-							})
-						)
+				case WebSocketActionType.WS_CONNECT:
+					if (socket !== null) {
+						socket.close()
+					}
+
+					socket = io(WEB_SOCKET_HOST)
+
+					socket.on('connect', () => {
+						dispatch({ type: WebSocketActionType.WS_CONNECTED })
+						if (auth.user && socket) {
+							socket.emit('user-connected', auth.user)
+						}
 					})
+
+					socket.on('disconnect', () => {
+						dispatch({ type: WebSocketActionType.WS_DISCONNECTED })
+					})
+
+					socket.on('connected', (data) => {
+						dispatch({ type: 'USER_JOINED', payload: data })
+					})
+
+					socket.on('online', (data) => {
+						dispatch({ type: 'USER_ONLINE', payload: data })
+					})
+
+					socket.on('room-created', (room) => {
+						dispatch({ type: 'ROOM_CREATED', payload: room })
+					})
+
+					socket.on('joined-room', (data) => {
+						dispatch({ type: 'USER_JOINED_ROOM', payload: data })
+					})
+
+					socket.on('left-room', (data) => {
+						dispatch({ type: 'USER_LEFT_ROOM', payload: data })
+					})
+
+					socket.on('disconnected', (data) => {
+						dispatch({ type: 'USER_DISCONNECTED', payload: data })
+					})
+
+					socket.on('offline', (data) => {
+						dispatch({ type: 'USER_OFFLINE', payload: data })
+					})
+
+					socket.on('message-sent', (message) => {
+						dispatch({ type: 'MESSAGE_SENT', payload: message })
+					})
+
+					socket.on('message-received', (message) => {
+						dispatch({ type: 'MESSAGE_RECEIVED', payload: message })
+					})
+
+					socket.on('user-rooms', (rooms) => {
+						dispatch({ type: 'ROOMS_RECEIVED', payload: rooms })
+					})
+
 					break
-				}
-				case messageSent.type: {
-					const message = (action as PayloadAction<MessageType>).payload
-					socket.socket.emit('message', message)
+
+				case WebSocketActionType.WS_DISCONNECT:
+					if (socket !== null) {
+						socket.close()
+					}
+					socket = null
 					break
-				}
-				// Disconnect
-				case 'socket/disconnect': {
-					socket.socket.disconnect()
+
+				case WebSocketActionType.USER_CONNECTED:
+					if (socket !== null) {
+						socket.emit('user-connected', action.payload)
+					}
 					break
-				}
+
+				case WebSocketActionType.USER_ONLINE:
+					if (socket !== null) {
+						socket.emit('user-online', action.payload)
+					}
+					break
+
+				case WebSocketActionType.CREATE_ROOM:
+					if (socket !== null) {
+						socket.emit('user-created-room', action.payload, auth.user)
+					}
+					break
+
+				case WebSocketActionType.JOIN_ROOM:
+					if (socket !== null) {
+						socket.emit('user-joined-room', action.payload, auth.user)
+					}
+					break
+
+				case WebSocketActionType.LEAVE_ROOM:
+					if (socket !== null) {
+						socket.emit('user-left-room', action.payload, auth.user)
+					}
+					break
+
+				case WebSocketActionType.SEND_MESSAGE:
+					if (socket !== null) {
+						socket.emit('message-sent', action.payload)
+					}
+					break
+
+				case WebSocketActionType.GET_ROOMS:
+					if (socket !== null) {
+						socket.emit('get-rooms', auth.user)
+					}
+					break
 			}
 		}
-
 		return next(action)
 	}
 }
-
-export default socketMiddleware
