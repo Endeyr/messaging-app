@@ -1,43 +1,44 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit'
 import { createAppSlice } from '../../app/createAppSlice'
-import { type UserType } from '../auth/authTypes'
+import type { UserType } from '../auth/authTypes'
 import socketService from './socketService'
-import type { JoinRoomType, RoomType, SocketStateType } from './socketTypes'
+import type { SocketStateType } from './socketTypes'
 
 const initialState: SocketStateType = {
 	isConnected: false,
 	rooms: [],
+	onlineUsers: [],
 	isSuccess: false,
 	isError: false,
+	isLoading: true,
 	message: '',
 }
-export const newUser = createAsyncThunk<
+
+const user = localStorage.getItem('user')
+const parsedUser = user ? (JSON.parse(user) as UserType) : null
+
+// TODO add ws for user, send user online / offline to other users
+
+export const listenForOnlineUsers = createAsyncThunk<
+	string[],
 	void,
-	UserType,
 	{ rejectValue: string }
->('socket/newUser', (user) => {
-	socketService.newUser(user)
-	return
-})
-
-export const joinRoom = createAsyncThunk<
-	RoomType,
-	JoinRoomType,
-	{ rejectValue: string }
->('socket/joinRoom', (args) => {
-	const { room, user } = args
-	socketService.joinRoom(room, user)
-	return room
-})
-
-export const leaveRoom = createAsyncThunk<
-	RoomType,
-	JoinRoomType,
-	{ rejectValue: string }
->('socket/leaveRoom', (args) => {
-	const { room, user } = args
-	socketService.leaveRoom(room, user)
-	return room
+>('socket/listenForOnlineUsers', async (_, thunkAPI) => {
+	try {
+		const onlineUsers: string[] = []
+		socketService.usersOnline((username) => {
+			onlineUsers.push(username)
+		})
+		return onlineUsers
+	} catch (error) {
+		let message: string
+		if (error instanceof Error) {
+			message = error.message
+		} else {
+			message = 'An unknown error occurred'
+		}
+		return thunkAPI.rejectWithValue(message)
+	}
 })
 
 export const socketSlice = createAppSlice({
@@ -54,18 +55,44 @@ export const socketSlice = createAppSlice({
 			state.isConnected = false
 		},
 		reset: () => initialState,
+		userOnline: () => {
+			if (parsedUser) {
+				socketService.userOnline(parsedUser)
+			}
+		},
+		addOnlineUser: (state, action) => {
+			if (!state.onlineUsers.includes(action.payload)) {
+				state.onlineUsers.push(action.payload)
+			}
+		},
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(joinRoom.fulfilled, (state, action) => {
-				state.rooms.push(action.payload)
+			.addCase(listenForOnlineUsers.pending, (state) => {
+				state.isLoading = true
 			})
-			.addCase(leaveRoom.fulfilled, (state, action) => {
-				state.rooms = state.rooms.filter((rm) => rm !== action.payload)
+			.addCase(listenForOnlineUsers.fulfilled, (state, action) => {
+				state.isLoading = false
+				state.isSuccess = true
+				state.onlineUsers = action.payload
 			})
+			.addCase(
+				listenForOnlineUsers.rejected,
+				(state, action: PayloadAction<string | undefined>) => {
+					state.isLoading = false
+					state.isError = true
+					state.message = action.payload || 'Failed to get online users'
+				}
+			)
 	},
 })
 
-export const { initSocket, connectionEstablished, connectionLost, reset } =
-	socketSlice.actions
+export const {
+	initSocket,
+	connectionEstablished,
+	connectionLost,
+	reset,
+	userOnline,
+	addOnlineUser,
+} = socketSlice.actions
 export default socketSlice.reducer

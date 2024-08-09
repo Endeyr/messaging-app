@@ -1,8 +1,8 @@
-import type { RoomType } from './socketTypes'
 import io from 'socket.io-client'
 import { WEB_SOCKET_HOST } from '../../config'
 import { type UserType } from '../auth/authTypes'
 import type { MessageType } from '../message/messageTypes'
+import type { RoomType } from './socketTypes'
 
 export const socket = io(WEB_SOCKET_HOST, {
 	autoConnect: false,
@@ -15,9 +15,19 @@ if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
 	})
 }
 
-const newUser = (user: UserType) => {
+// Users ws
+const userOnline = (user: UserType) => {
 	socket.auth = { username: user.username }
-	socket.emit('user-connected', user)
+	socket.emit('user-online', user)
+	return user.username
+}
+
+const usersOnline = (cb: (username: string) => void) => {
+	// From broadcast
+	socket.on('online', (data) => {
+		console.log(data.username, ' is online')
+		cb(data.username)
+	})
 }
 
 const joinRoom = (room: RoomType, user: UserType) => {
@@ -28,6 +38,7 @@ const leaveRoom = (room: RoomType, user: UserType) => {
 	socket.emit('user-left-room', room, user)
 }
 
+// Message ws
 const sentMessage = (message: MessageType, room: RoomType, user: UserType) => {
 	socket.emit('message-sent', {
 		content: message,
@@ -46,8 +57,11 @@ const receiveMessage = (
 	})
 }
 
+// Room ws
+
 const socketService = {
-	newUser,
+	userOnline,
+	usersOnline,
 	joinRoom,
 	leaveRoom,
 	sentMessage,

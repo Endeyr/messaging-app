@@ -2,9 +2,11 @@ import type { UserType } from '../auth/authTypes'
 
 export type SocketStateType = {
 	rooms: RoomType[]
+	onlineUsers: string[]
 	isConnected: boolean
 	isSuccess: boolean
 	isError: boolean
+	isLoading: boolean
 	message: string
 }
 

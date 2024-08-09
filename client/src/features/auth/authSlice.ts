@@ -31,7 +31,8 @@ export const register = createAsyncThunk<
 	{ rejectValue: string }
 >('auth/register', async (user, thunkAPI) => {
 	try {
-		return await authService.register(user)
+		const registeredUser = await authService.register(user)
+		return registeredUser
 	} catch (error: unknown) {
 		let message: string
 		if (axios.isAxiosError(error)) {
