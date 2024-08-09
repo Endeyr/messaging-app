@@ -31,3 +31,8 @@ TODO.MD
 *.env
 *.mongodb.js
 coverage
+
+# Docker
+.dockerignore
+Dockerfile
+fly.toml
