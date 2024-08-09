@@ -35,7 +35,6 @@ export const socketMiddleware: Middleware<Dispatch, RootState> = (
 					}
 
 					socket = io(WEB_SOCKET_HOST, {
-						transports: ['websocket'],
 						forceNew: true,
 					})
 
