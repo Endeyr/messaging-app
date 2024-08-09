@@ -34,7 +34,10 @@ export const socketMiddleware: Middleware<Dispatch, RootState> = (
 						socket.close()
 					}
 
-					socket = io(WEB_SOCKET_HOST)
+					socket = io(WEB_SOCKET_HOST, {
+						transports: ['websocket'],
+						forceNew: true,
+					})
 
 					socket.on('connect', () => {
 						dispatch({ type: WebSocketActionType.WS_CONNECTED })
