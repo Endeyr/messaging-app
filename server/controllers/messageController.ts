@@ -18,10 +18,16 @@ export const getMessages = async (
 		if (!req.user) {
 			return res.json({ message: 'User not found' })
 		} else {
-			const sentFromMessages = await messageModel.find({
-				sent_from: req.user.id,
-			})
-			const sentToMessages = await messageModel.find({ sent_to: req.user.id })
+			const sentFromMessages = await messageModel
+				.find({
+					sent_from: req.user.id,
+				})
+				.populate('sent_from', 'username')
+				.populate('sent_to', 'username')
+			const sentToMessages = await messageModel
+				.find({ sent_to: req.user.id })
+				.populate('sent_to', 'username')
+				.populate('sent_from', 'username')
 			messages.push(...sentFromMessages)
 			messages.push(...sentToMessages)
 			messages.sort((a, b) => {
@@ -30,6 +36,8 @@ export const getMessages = async (
 				}
 				return 0
 			})
+
+			console.log(messages)
 			return res.json({ messages })
 		}
 	} catch (error) {
@@ -58,18 +66,13 @@ export const sendMessage = async (
 				return res.status(400).json({ message: 'Please add a username' })
 			} else {
 				const text = req.body.text as string
-				const newMessage = await messageModel.create({
+				const message = await messageModel.create({
 					sent_from: req.user,
 					sent_to: recipient,
 					text: text,
 				})
-				const message = {
-					_id: newMessage._id,
-					sent_from: newMessage.sent_from.username,
-					sent_to: newMessage.sent_to?.username,
-					text: text,
-					createdAt: newMessage.createdAt,
-				}
+				message.populate('sent_to', 'username')
+				message.populate('sent_from', 'username')
 				return res.status(200).json({ message })
 			}
 		}

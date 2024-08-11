@@ -5,7 +5,6 @@ import { type MessageType } from '../features/message/messageTypes'
 const Message = ({ msg }: { msg: MessageType }) => {
 	const dispatch = useAppDispatch()
 
-	console.log(msg)
 	return (
 		<>
 			<ListItemText
@@ -16,9 +15,16 @@ const Message = ({ msg }: { msg: MessageType }) => {
 						variant="body2"
 						sx={{ display: 'inline' }}
 					>
-						<p>From: {msg.sent_from}</p>
-						<p>To: {msg.sent_to}</p>
-						<p>{msg.createdAt?.toLocaleString('en-US')}</p>
+						<p>From: {msg.sent_from.username}</p>
+						<p>To: {msg.sent_to?.username}</p>
+						{msg.createdAt && (
+							<p>
+								{new Date(msg.createdAt).toLocaleString('en-US', {
+									dateStyle: 'short',
+									timeStyle: 'medium',
+								})}
+							</p>
+						)}
 						<Button
 							color="error"
 							onClick={() => dispatch(deleteMessage(msg._id))}

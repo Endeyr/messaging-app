@@ -4,7 +4,7 @@ import { type SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { ZodError } from 'zod'
 import { useAppDispatch } from '../app/hooks'
-import { createMessage } from '../features/message/messageSlice'
+import { createMessage, getMessages } from '../features/message/messageSlice'
 import type { MessageFormDataType } from '../features/message/messageTypes'
 import { messageSchema } from '../schema/messageSchema'
 import MessengerFormField from './MessengerFormField'
@@ -21,6 +21,7 @@ const Messenger = () => {
 	const onSubmit: SubmitHandler<MessageFormDataType> = async (data) => {
 		try {
 			dispatch(createMessage(data))
+			dispatch(getMessages())
 		} catch (error: unknown) {
 			if (error instanceof ZodError) {
 				error.issues.map((issue) => {

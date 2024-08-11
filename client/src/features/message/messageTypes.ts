@@ -1,12 +1,14 @@
+import type { UserType } from '../auth/authTypes'
+
 export type MessageType = {
 	_id: string
-	sent_from: string
-	sent_to?: string
+	sent_from: Partial<UserType>
+	sent_to?: Partial<UserType>
 	room?: string
 	text: string
 	media_url?: string
-	createdAt?: Date
-	updatedAt?: Date
+	createdAt?: string
+	updatedAt?: string
 }
 
 export type MessageDeleteType = {
