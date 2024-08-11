@@ -1,11 +1,8 @@
-import { type UserType } from '../auth/authTypes'
-import { type RoomType } from './../../types/Room'
-
 export type MessageType = {
 	_id: string
-	sent_from: UserType
-	sent_to?: UserType
-	room?: RoomType
+	sent_from: string
+	sent_to?: string
+	room?: string
 	text: string
 	media_url?: string
 	createdAt?: Date
@@ -23,4 +20,11 @@ export type MessageStateType = {
 	isSuccess: boolean
 	isLoading: boolean
 	message: string
+}
+
+export type MessageFormDataType = {
+	sent_to?: string
+	room?: string
+	text: string
+	media_url?: string
 }

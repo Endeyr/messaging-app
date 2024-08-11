@@ -2,10 +2,10 @@ import { type PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { createAppSlice } from '../../app/createAppSlice'
 import { type RootState } from '../../app/store'
-import { type MessageFormDataType } from '../../types/Message'
 import messageService from './messageService'
 import {
 	type MessageDeleteType,
+	type MessageFormDataType,
 	type MessageStateType,
 	type MessageType,
 } from './messageTypes'
@@ -18,18 +18,18 @@ const initialState: MessageStateType = {
 	message: '',
 }
 
-export const createText = createAsyncThunk<
+export const createMessage = createAsyncThunk<
 	MessageType,
 	MessageFormDataType,
 	{ rejectValue: string; state: RootState }
->('message/create', async (text, thunkAPI) => {
+>('message/create', async (messageData, thunkAPI) => {
 	try {
 		const token = thunkAPI.getState().auth.user?.token
 		if (!token) {
 			const tokenError = new Error('Token not found')
 			return thunkAPI.rejectWithValue(tokenError.message)
 		}
-		return await messageService.createText(text, token)
+		return await messageService.createMessage(messageData, token)
 	} catch (error) {
 		let message: string
 		if (axios.isAxiosError(error)) {
@@ -114,16 +114,16 @@ export const messageSlice = createAppSlice({
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(createText.pending, (state) => {
+			.addCase(createMessage.pending, (state) => {
 				state.isLoading = true
 			})
-			.addCase(createText.fulfilled, (state, action) => {
+			.addCase(createMessage.fulfilled, (state, action) => {
 				state.isLoading = false
 				state.isSuccess = true
 				state.messages.push(action.payload)
 			})
 			.addCase(
-				createText.rejected,
+				createMessage.rejected,
 				(state, action: PayloadAction<string | undefined>) => {
 					state.isLoading = false
 					state.isError = true

@@ -1,18 +1,33 @@
-import { Button } from '@mui/material'
+import { Button, ListItemText, Typography } from '@mui/material'
 import { useAppDispatch } from '../app/hooks'
 import { deleteMessage } from '../features/message/messageSlice'
 import { type MessageType } from '../features/message/messageTypes'
 const Message = ({ msg }: { msg: MessageType }) => {
 	const dispatch = useAppDispatch()
+
+	console.log(msg)
 	return (
 		<>
-			<h2>From: {msg.sent_from.username}</h2>
-			{msg.sent_to && <h4>To: {msg.sent_to.username}</h4>}
-			<p>{msg.text}</p>
-			{msg.createdAt && <div>{msg.createdAt.toLocaleString('en-US')}</div>}
-			<Button color="error" onClick={() => dispatch(deleteMessage(msg._id))}>
-				Delete
-			</Button>
+			<ListItemText
+				primary={msg.text}
+				secondary={
+					<Typography
+						component={'span'}
+						variant="body2"
+						sx={{ display: 'inline' }}
+					>
+						<p>From: {msg.sent_from}</p>
+						<p>To: {msg.sent_to}</p>
+						<p>{msg.createdAt?.toLocaleString('en-US')}</p>
+						<Button
+							color="error"
+							onClick={() => dispatch(deleteMessage(msg._id))}
+						>
+							Delete
+						</Button>
+					</Typography>
+				}
+			/>
 		</>
 	)
 }

@@ -1,14 +1,9 @@
-import {
-	Box,
-	Grid,
-	List,
-	ListItem,
-	ListItemText,
-	Typography,
-} from '@mui/material'
+import { Box, Grid, List, ListItem } from '@mui/material'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import Message from '../../components/Message'
+import Messenger from '../../components/Messenger'
 import { getMessages, reset } from '../../features/message/messageSlice'
 // @desc All of users friends, messages, ect?
 // @private Must be logged in
@@ -42,7 +37,8 @@ const DashboardPage = () => {
 	}
 
 	return (
-		<Grid container spacing={2} sx={{ marginTop: '8px' }}>
+		<Grid container spacing={1} sx={{ marginTop: '8px' }}>
+			{/* 
 			<Grid item xs={4} height="90dvh">
 				<Box display="flex" flexDirection="column" alignItems="center" gap={4}>
 					<Box component="header" sx={{ fontSize: '1.2rem' }}>
@@ -58,36 +54,27 @@ const DashboardPage = () => {
 						<ListItem alignItems="flex-start">
 							<ListItemText primary="Room Number" />
 						</ListItem>
-						{/* TODO Get and display rooms, have rooms in socket - features/auth */}
+						
 					</List>
 				</Box>
 			</Grid>
-			<Grid item xs={8} height="90dvh">
+			 */}
+			<Grid item xs={12} height="90dvh">
 				<Box display="flex" flexDirection="column" alignItems="center" gap={4}>
-					<Box component="header" sx={{ fontSize: '1.2rem' }}>
+					<Box component="h2" sx={{ fontSize: '1.2rem' }}>
 						Messages
 					</Box>
 					<List sx={{ width: '100%', maxWidth: 360 }}>
 						{messages &&
 							messages.map((msg) => (
-								<ListItem alignItems="flex-start">
-									<ListItemText
-										primary={msg.text}
-										secondary={
-											<>
-												<Typography
-													component="span"
-													variant="body2"
-													sx={{ display: 'inline' }}
-												>
-													From: {msg.sent_from.username}
-												</Typography>
-											</>
-										}
-									/>
+								<ListItem key={msg._id} alignItems="flex-start">
+									<Message msg={msg} />
 								</ListItem>
 							))}
 					</List>
+				</Box>
+				<Box display="flex" flexDirection="column" alignItems="center" gap={4}>
+					<Messenger />
 				</Box>
 			</Grid>
 		</Grid>

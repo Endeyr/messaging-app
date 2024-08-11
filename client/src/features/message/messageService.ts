@@ -1,11 +1,14 @@
 import axios from 'axios'
-import { type MessageFormDataType } from './../../types/Message'
-import { type MessageDeleteType, type MessageType } from './messageTypes'
+import {
+	type MessageDeleteType,
+	type MessageFormDataType,
+	type MessageType,
+} from './messageTypes'
 
 const API_URL = `${import.meta.env.VITE_API_URL}/message/`
 
-const createText = async (
-	textData: MessageFormDataType,
+const createMessage = async (
+	messageData: MessageFormDataType,
 	token: string
 ): Promise<MessageType> => {
 	const config = {
@@ -13,8 +16,8 @@ const createText = async (
 			Authorization: `Bearer ${token}`,
 		},
 	}
-	const response = await axios.post(API_URL, textData, config)
-	return response.data
+	const response = await axios.post(API_URL, messageData, config)
+	return response.data.message
 }
 
 const getMessages = async (token: string): Promise<MessageType[]> => {
@@ -41,7 +44,7 @@ const deleteMessage = async (
 }
 
 const messageService = {
-	createText,
+	createMessage,
 	getMessages,
 	deleteMessage,
 }

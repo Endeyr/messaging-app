@@ -1,11 +1,12 @@
-import { ObjectId } from 'bson'
 import mongoose, { Document } from 'mongoose'
+import { IRoomDocument } from './room'
+import { IUserDocument } from './user'
 const { Schema, model } = mongoose
 
 export interface IMessage {
-	sent_from: ObjectId
-	sent_to?: ObjectId
-	room?: ObjectId
+	sent_from: IUserDocument
+	sent_to?: IUserDocument
+	room?: IRoomDocument
 	text: string
 	media_url?: string
 }

@@ -3,6 +3,7 @@ import messageModel from '../model/messages'
 import userModel from '../model/user'
 import { UserAuthRequest } from '../types/types'
 import { IMessageDocument } from './../model/messages'
+import { IUserDocument } from './../model/user'
 
 // @desc Get all messages for a user
 // @route GET /api/message
@@ -52,12 +53,25 @@ export const sendMessage = async (
 		if (!req.user) {
 			return res.status(401).json({ message: 'User not found' })
 		} else {
-			const message = await messageModel.create({
-				sent_from: req.user,
-				sent_to: req.body.sent_to,
-				text: req.body.text,
-			})
-			return res.status(200).json({ message })
+			const recipient = await userModel.findOne({ username: req.body.sent_to })
+			if (!recipient) {
+				return res.status(400).json({ message: 'Please add a username' })
+			} else {
+				const text = req.body.text as string
+				const newMessage = await messageModel.create({
+					sent_from: req.user,
+					sent_to: recipient,
+					text: text,
+				})
+				const message = {
+					_id: newMessage._id,
+					sent_from: newMessage.sent_from.username,
+					sent_to: newMessage.sent_to?.username,
+					text: text,
+					createdAt: newMessage.createdAt,
+				}
+				return res.status(200).json({ message })
+			}
 		}
 	} catch (error) {
 		console.error('Error sending message:', error)
