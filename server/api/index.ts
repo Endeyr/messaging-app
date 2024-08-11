@@ -19,14 +19,14 @@ import {
 	ServerToClientEventsType,
 	SocketDataType,
 } from '../types/socket-io'
-import { CLIENT_HOST, MONGO_URI, PORT } from '../utils/config'
+import { MONGO_URI, PORT } from '../utils/config'
 
 dotenv.config()
 const app = express()
 app.use(express.static(path.join(__dirname, 'build')))
 
 const corsOptions = {
-	origin: CLIENT_HOST,
+	origin: '*',
 	optionsSuccessStatus: 200,
 }
 
