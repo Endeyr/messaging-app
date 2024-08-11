@@ -48,7 +48,6 @@ const LoginPage = () => {
 	}, [user, isError, isSuccess, message, navigate, dispatch])
 
 	if (isLoading) {
-		// TODO Loading spinner
 		return <div>... Loading</div>
 	}
 

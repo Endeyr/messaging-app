@@ -117,23 +117,24 @@ const Navbar = () => {
 							onClose={handleCloseNavMenu}
 							sx={{ display: { xs: 'block', md: 'none' } }}
 						>
-							{pages.map((page) => (
-								<MenuItem key={page.id} onClick={handleCloseNavMenu}>
-									<Typography component={'div'} textAlign="center">
-										<Link
-											component={RouterLink}
-											to={`${page.route}`}
-											style={{
-												textDecoration: 'none',
-												color: 'inherit',
-												textTransform: 'capitalize',
-											}}
-										>
-											{page.name}
-										</Link>
-									</Typography>
-								</MenuItem>
-							))}
+							{pages.length > 0 &&
+								pages.map((page) => (
+									<MenuItem key={page.id} onClick={handleCloseNavMenu}>
+										<Typography component={'div'} textAlign="center">
+											<Link
+												component={RouterLink}
+												to={`${page.route}`}
+												style={{
+													textDecoration: 'none',
+													color: 'inherit',
+													textTransform: 'capitalize',
+												}}
+											>
+												{page.name}
+											</Link>
+										</Typography>
+									</MenuItem>
+								))}
 						</Menu>
 					</Box>
 					<AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -165,30 +166,31 @@ const Navbar = () => {
 						</Link>
 					</Typography>
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-						{pages.map((page) => (
-							<Button
-								key={page.id}
-								onClick={handleCloseNavMenu}
-								sx={{ my: 2, color: 'white', display: 'block' }}
-							>
-								<Link
-									component={RouterLink}
-									to={`${page.route}`}
-									style={{
-										textDecoration: 'none',
-										color: 'inherit',
-									}}
+						{pages.length > 0 &&
+							pages.map((page) => (
+								<Button
+									key={page.id}
+									onClick={handleCloseNavMenu}
+									sx={{ my: 2, color: 'white', display: 'block' }}
 								>
-									{page.name}
-								</Link>
-							</Button>
-						))}
+									<Link
+										component={RouterLink}
+										to={`${page.route}`}
+										style={{
+											textDecoration: 'none',
+											color: 'inherit',
+										}}
+									>
+										{page.name}
+									</Link>
+								</Button>
+							))}
 					</Box>
 					{/* User Icon */}
 					<Box sx={{ flexGrow: 0 }}>
 						<Tooltip title="Open settings">
 							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-								<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+								<Avatar alt="avatar" src="/static/images/avatar/2.jpg" />
 							</IconButton>
 						</Tooltip>
 						<Menu

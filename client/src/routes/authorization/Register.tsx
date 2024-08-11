@@ -48,7 +48,6 @@ const RegisterPage = () => {
 	}, [user, isError, isSuccess, message, navigate, dispatch])
 
 	if (isLoading) {
-		// TODO loading spinner / page
 		return <div>... Loading</div>
 	}
 
