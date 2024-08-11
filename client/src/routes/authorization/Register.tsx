@@ -42,7 +42,7 @@ const RegisterPage = () => {
 			toast.error(message)
 		}
 		if (isSuccess || user) {
-			navigate('/')
+			navigate('/dashboard')
 		}
 		setTimeout(() => dispatch(userReset()), 10)
 	}, [user, isError, isSuccess, message, navigate, dispatch])
