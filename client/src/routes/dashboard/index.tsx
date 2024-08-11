@@ -60,7 +60,7 @@ const DashboardPage = () => {
 			</Grid>
 			 */}
 			<Grid item xs={12} height="90dvh">
-				<Box display="flex" flexDirection="column" alignItems="center" gap={4}>
+				{/* <Box display="flex" flexDirection="column" alignItems="center" gap={4}>
 					<Box component="h2" sx={{ fontSize: '1.2rem' }}>
 						Messages
 					</Box>
@@ -75,7 +75,7 @@ const DashboardPage = () => {
 				</Box>
 				<Box display="flex" flexDirection="column" alignItems="center" gap={4}>
 					<Messenger />
-				</Box>
+				</Box>*/}
 			</Grid>
 		</Grid>
 	)

@@ -36,8 +36,6 @@ export const getMessages = async (
 				}
 				return 0
 			})
-
-			console.log(messages)
 			return res.json({ messages })
 		}
 	} catch (error) {
