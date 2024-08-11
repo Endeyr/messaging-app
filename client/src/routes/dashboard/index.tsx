@@ -1,9 +1,9 @@
-import { Box, Grid, List } from '@mui/material'
+import { Box, Grid, List, ListItem } from '@mui/material'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-// import Message from '../../components/Message'
-// import Messenger from '../../components/Messenger'
+import Message from '../../components/Message'
+import Messenger from '../../components/Messenger'
 import { getMessages, reset } from '../../features/message/messageSlice'
 // @desc All of users friends, messages, ect?
 // @private Must be logged in
@@ -36,8 +36,6 @@ const DashboardPage = () => {
 		return <div>Error: {message}</div>
 	}
 
-	console.log(messages)
-
 	return (
 		<Grid container spacing={1} sx={{ marginTop: '8px' }}>
 			<Grid item xs={12} height="90dvh">
@@ -46,17 +44,16 @@ const DashboardPage = () => {
 						Messages
 					</Box>
 					<List sx={{ width: '100%', maxWidth: 360 }}>
-						{/* 
-						{messages &&
+						{messages.length > 0 &&
 							messages.map((msg) => (
 								<ListItem key={msg._id} alignItems="flex-start">
 									<Message msg={msg} />
 								</ListItem>
-							))} */}
+							))}
 					</List>
 				</Box>
 				<Box display="flex" flexDirection="column" alignItems="center" gap={4}>
-					{/* <Messenger /> */}
+					<Messenger />
 				</Box>
 			</Grid>
 		</Grid>

@@ -21,13 +21,14 @@ const Messenger = () => {
 	const onSubmit: SubmitHandler<MessageFormDataType> = async (data) => {
 		try {
 			dispatch(createMessage(data))
-			dispatch(getMessages())
 		} catch (error: unknown) {
 			if (error instanceof ZodError) {
 				error.issues.map((issue) => {
 					toast.error(issue.message)
 				})
 			}
+		} finally {
+			dispatch(getMessages())
 		}
 	}
 
