@@ -37,7 +37,9 @@ export const register = createAsyncThunk<
 		let message: string
 		if (axios.isAxiosError(error)) {
 			message =
-				(error.response?.data as string) || error.message || 'An error occurred'
+				(error.response?.data.error.message as string) ||
+				error.message ||
+				'An error occurred'
 		} else {
 			message = (error as Error).message || 'An error occurred'
 		}
@@ -56,7 +58,9 @@ export const login = createAsyncThunk<
 		let message: string
 		if (axios.isAxiosError(error)) {
 			message =
-				(error.response?.data as string) || error.message || 'An error occurred'
+				(error.response?.data.error.message as string) ||
+				error.message ||
+				'An error occurred'
 		} else {
 			message = (error as Error).message || 'An error occurred'
 		}

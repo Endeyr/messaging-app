@@ -33,7 +33,7 @@ const DashboardPage = () => {
 	}
 
 	if (isError) {
-		return <div>Error: {message}</div>
+		console.log(message)
 	}
 
 	return (
