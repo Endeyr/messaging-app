@@ -1,19 +1,24 @@
 # React Messaging App
 
-This is a simple web messaging application built using React, Vite, Material UI, and Vitest for the Odin Project course.
+A real-time web messaging application built with React, allowing users to send messages, customize profiles, and securely authenticate. This project was developed as part of the Odin Project course.
 
 ## Features
 
-- Authorization: User authentication and authorization system to ensure secure access to the messaging platform.
-- Sending Messages: Users can send messages to each other in real-time.
-- Customizing User Profile: Users can customize their profile by updating their information and uploading a profile picture.
+- User Authentication: Secure login and registration system to protect user accounts and data.
+- Real-time Messaging: Instantly send and receive messages with other users.
+- Profile Customization: Update personal information and upload profile pictures to personalize your account.
+- Responsive Design: Fully responsive interface that works seamlessly on desktop and mobile devices.
 
 ## Technologies Used
 
-- React: A popular JavaScript library for building user interfaces, React allows for the creation of reusable UI components and efficient rendering through its virtual DOM implementation.
-- Vite: A next-generation frontend build tool, Vite provides a fast and optimized development environment for modern web projects, featuring instant server start and lightning-fast hot module replacement.
-- MaterialUI: A robust React component library that implements Google's Material Design, Material UI offers a wide range of customizable components to create visually appealing and consistent user interfaces.
-- Vitest: Vitest is a fast and efficient unit testing framework tailored for modern web development with Vite.
+- Frontend: React, Vite, Material UI
+- Backend: Express.js
+- Testing: Vitest, Jest
+
+## Prerequisites
+
+- Node.js (v20.10.0 or later)
+- npm (v10.8.1 or later)
 
 ## Setup
 
@@ -23,20 +28,28 @@ This is a simple web messaging application built using React, Vite, Material UI,
 git clone https://github.com/Endeyr/messaging-app.git
 ```
 
-2. Install dependencies:
+2. Install dependencies, need to install in both the client and server directory:
 
 ```
-cd messaging-app
+cd messaging-app/client
+npm install
+
+cd ../server
 npm install
 ```
 
-3. Run the development server:
+3. Set up environment variables:
+
+- Create a .env file in the server directory
+- Add necessary variables (e.g., DATABASE_URL, JWT_SECRET)
+
+4. Run the development server, need to run both the client and server directory:
 
 ```
 npm run dev
 ```
 
-4. Open your browser and navigate to http://localhost:3000 to view the app.
+4. Open your browser and navigate to http://localhost:5173 to view the app.
 
 ## Usage
 
@@ -46,7 +59,7 @@ npm run dev
 
 ## Testing
 
-To run tests:
+To run tests, must be ran in either the server or client directory:
 
 ```
 npm run test
@@ -54,8 +67,14 @@ npm run test
 
 ## Demo
 
-Link to Demo
+Check out the live [Demo](https://messaging-app-frontend-one.vercel.app/)
 
 ## License
 
 This project is licensed under the MIT License.
+
+## Acknowledgements
+
+- The Odin Project
+- React Documentation
+- Material UI
