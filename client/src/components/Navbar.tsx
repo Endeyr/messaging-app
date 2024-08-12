@@ -26,7 +26,7 @@ type LinkType = {
 const pages: LinkType[] = []
 const loggedInSettings: LinkType[] = [
 	{ id: 1, name: 'Dashboard', route: 'dashboard' },
-	// { id: 2, name: 'Profile', route: 'user/profile' },
+	{ id: 2, name: 'Profile', route: 'user/profile' },
 	{ id: 3, name: 'Logout' },
 ]
 const loggedOutSettings: LinkType[] = [

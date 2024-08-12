@@ -115,7 +115,6 @@ export const deleteUser = async (
 			return res.status(400).json({ message: 'User not found' })
 		}
 		if (!req.user?.role.includes(RoleEnum.admin)) {
-			console.log('auth error')
 			return res
 				.status(401)
 				.json({ message: 'User not authorized to delete user' })

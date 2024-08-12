@@ -12,9 +12,9 @@ import {
 
 const initialState: MessageStateType = {
 	messages: [],
-	isError: false,
 	isSuccess: false,
 	isLoading: false,
+	isError: false,
 	message: '',
 }
 
