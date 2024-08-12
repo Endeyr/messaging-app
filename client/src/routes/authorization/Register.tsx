@@ -33,6 +33,8 @@ const RegisterPage = () => {
 				error.issues.map((issue) => {
 					toast.error(issue.message)
 				})
+			} else {
+				toast.error('An unexpected error occurred')
 			}
 		}
 	}

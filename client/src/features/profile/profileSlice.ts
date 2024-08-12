@@ -2,6 +2,7 @@ import { type PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { createAppSlice } from '../../app/createAppSlice'
 import { type RootState } from '../../app/store'
+import type { ProfileFormDataType } from '../../types/Profile'
 import profileService from './profileService'
 import type { UserDataStateType, userDataType } from './profileTypes'
 
@@ -46,16 +47,16 @@ export const getUserData = createAsyncThunk<
 
 export const updateUserData = createAsyncThunk<
 	userDataType,
-	string,
+	ProfileFormDataType,
 	{ rejectValue: string; state: RootState }
->('profile/updateUserData', async (id, thunkAPI) => {
+>('profile/updateUserData', async (userData, thunkAPI) => {
 	try {
 		const token = thunkAPI.getState().auth.user?.token
 		if (!token) {
 			const tokenError = new Error('Token not found')
 			return thunkAPI.rejectWithValue(tokenError.message)
 		}
-		return profileService.updateUserData(id, token)
+		return profileService.updateUserData(userData, token)
 	} catch (error) {
 		let message: string
 		if (axios.isAxiosError(error)) {
@@ -126,6 +127,7 @@ export const profileSlice = createAppSlice({
 			state.isLoading = false
 			state.isSuccess = true
 			state.userData = action.payload
+			state.message = 'Profile updated successfully'
 		})
 		builder.addCase(
 			updateUserData.rejected,
@@ -142,6 +144,7 @@ export const profileSlice = createAppSlice({
 			state.isLoading = false
 			state.isSuccess = true
 			state.userData = null
+			state.message = 'User deleted'
 		})
 		builder.addCase(
 			deleteUser.rejected,

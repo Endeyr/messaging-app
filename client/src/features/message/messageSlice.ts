@@ -24,12 +24,17 @@ export const createMessage = createAsyncThunk<
 	{ rejectValue: string; state: RootState }
 >('message/create', async (messageData, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user?.token
+		const user = thunkAPI.getState().auth.user
+		if (!user) {
+			const userError = new Error('User not found')
+			return thunkAPI.rejectWithValue(userError.message)
+		}
+		const token = user.token
 		if (!token) {
 			const tokenError = new Error('Token not found')
 			return thunkAPI.rejectWithValue(tokenError.message)
 		}
-		return await messageService.createMessage(messageData, token)
+		return await messageService.createMessage(messageData, user.username, token)
 	} catch (error) {
 		let message: string
 		if (axios.isAxiosError(error)) {
@@ -127,6 +132,7 @@ export const messageSlice = createAppSlice({
 				state.isLoading = false
 				state.isSuccess = true
 				state.messages.push(action.payload)
+				state.message = 'Message created successfully'
 			})
 			.addCase(
 				createMessage.rejected,
@@ -161,6 +167,7 @@ export const messageSlice = createAppSlice({
 				state.messages = state.messages.filter(
 					(message) => message._id !== action.payload.id
 				)
+				state.message = 'Message deleted successfully'
 			})
 			.addCase(
 				deleteMessage.rejected,

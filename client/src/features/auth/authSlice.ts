@@ -92,11 +92,12 @@ export const authSlice = createAppSlice({
 				state.isLoading = false
 				state.isSuccess = true
 				state.user = action.payload
+				state.message = 'User successfully registered'
 			})
-			.addCase(register.rejected, (state, action) => {
+			.addCase(register.rejected, (state) => {
 				state.isLoading = false
 				state.isError = true
-				state.message = action.payload as string
+				state.message = 'Incorrect email or password'
 				state.user = null
 			})
 			.addCase(login.pending, (state) => {
@@ -106,11 +107,12 @@ export const authSlice = createAppSlice({
 				state.isLoading = false
 				state.isSuccess = true
 				state.user = action.payload
+				state.message = 'User successfully logged in'
 			})
-			.addCase(login.rejected, (state, action) => {
+			.addCase(login.rejected, (state) => {
 				state.isLoading = false
 				state.isError = true
-				state.message = action.payload as string
+				state.message = 'Incorrect email or password'
 				state.user = null
 			})
 			.addCase(logout.fulfilled, (state) => {

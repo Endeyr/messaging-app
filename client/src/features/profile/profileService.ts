@@ -1,4 +1,5 @@
 import axios from 'axios'
+import type { ProfileFormDataType } from './../../types/Profile'
 import type { userDataType } from './profileTypes'
 
 const API_URL = `${import.meta.env.VITE_API_URL}/api/user/`
@@ -17,7 +18,7 @@ const getUserData = async (
 }
 
 const updateUserData = async (
-	userId: string,
+	userData: ProfileFormDataType,
 	token: string
 ): Promise<userDataType> => {
 	const config = {
@@ -25,7 +26,12 @@ const updateUserData = async (
 			Authorization: `Bearer ${token}`,
 		},
 	}
-	const response = await axios.put(API_URL + 'update/' + userId, config)
+	const userInfo = { username: userData.username, email: userData.email }
+	const response = await axios.put(
+		API_URL + 'update/' + userData.userId,
+		userInfo,
+		config
+	)
 	return response.data
 }
 

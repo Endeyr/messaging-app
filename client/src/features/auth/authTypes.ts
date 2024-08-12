@@ -5,7 +5,7 @@ export type UserResponseDataType = {
 }
 
 export type UserType = {
-	_id: string
+	userId: string
 	username: string
 	email: string
 	role?: RoleEnum[]

@@ -6,7 +6,7 @@ import { ZodError } from 'zod'
 import { useAppDispatch } from '../app/hooks'
 import { createMessage, getMessages } from '../features/message/messageSlice'
 import type { MessageFormDataType } from '../features/message/messageTypes'
-import { messageSchema } from '../schema/messageSchema'
+import { messageSchema } from '../schema/MessageSchema'
 import MessengerFormField from './MessengerFormField'
 
 const Messenger = () => {

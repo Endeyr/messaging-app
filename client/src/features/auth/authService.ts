@@ -25,7 +25,6 @@ const login = async (userData: LoginFormDataType): Promise<UserType> => {
 	if (response.data) {
 		localStorage.setItem('user', JSON.stringify(response.data.data))
 	}
-	console.log(response.data.data)
 	return response.data.data
 }
 
