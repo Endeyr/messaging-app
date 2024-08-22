@@ -103,15 +103,6 @@ export const deleteMessage = async (
 		if (!user) {
 			return res.status(401).json({ message: 'User not found' })
 		}
-		// TODO only allow mods + admin to delete messages
-		// if (
-		// 	!req.user?.role.includes(RoleEnum.moderator) ||
-		// 	!req.user?.role.includes(RoleEnum.admin)
-		// ) {
-		// 	return res
-		// 		.status(401)
-		// 		.json({ message: 'User not authorized to delete message' })
-		// }
 		await message?.deleteOne()
 		return res
 			.status(200)

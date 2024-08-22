@@ -17,8 +17,6 @@ const initialState: SocketStateType = {
 const user = localStorage.getItem('user')
 const parsedUser = user ? (JSON.parse(user) as UserType) : null
 
-// TODO add ws for user, send user online / offline to other users
-
 export const listenForOnlineUsers = createAsyncThunk<
 	string[],
 	void,
