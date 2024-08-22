@@ -11,7 +11,6 @@ import App from './App.tsx'
 import { store } from './app/store.ts'
 import ErrorPage from './error-page.tsx'
 import './index.css'
-import ForgotPasswordOrEmailPage from './routes/authorization/Forgot-Password-Or-Email.tsx'
 import LoginPage from './routes/authorization/Login.tsx'
 import RegisterPage from './routes/authorization/Register.tsx'
 import DashboardPage from './routes/dashboard/index.tsx'
@@ -36,10 +35,6 @@ const router = createBrowserRouter([
 			{
 				path: 'authentication/login',
 				element: <LoginPage />,
-			},
-			{
-				path: 'authentication/forgot-password-or-email',
-				element: <ForgotPasswordOrEmailPage />,
 			},
 			{
 				path: 'user/profile',
